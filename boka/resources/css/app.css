@@ -1,0 +1,241 @@
+@import 'tailwindcss';
+
+@import 'tw-animate-css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Identitas visual Konsep 3 "BOKA": hijau sawah, emas kunyit, marun sutra.
+ * Semua warna lewat token; mengganti palet cukup di file ini. Warna tidak boleh ditulis langsung di komponen.
+ */
+@theme {
+    --font-sans:
+        'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-2xl: calc(var(--radius) + 10px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    /* Aksen khusus Boka */
+    --color-gold: var(--gold);
+    --color-gold-foreground: var(--gold-foreground);
+    --color-gold-soft: var(--gold-soft);
+    --color-leaf: var(--leaf);
+    --color-leaf-soft: var(--leaf-soft);
+    --color-primary-soft: var(--primary-soft);
+    --color-maroon: var(--maroon);
+    --color-logo-stem: var(--logo-stem);
+    --color-logo-ring: var(--logo-ring);
+    --color-logo-diamond: var(--logo-diamond);
+    --color-hero: var(--hero);
+    --color-hero-foreground: var(--hero-foreground);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+
+    --animate-pop: pop 300ms cubic-bezier(0.3, 1.6, 0.5, 1);
+    --animate-rise: rise 200ms ease-out both;
+
+    @keyframes pop {
+        0% { transform: scale(1); }
+        40% { transform: scale(1.35); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes rise {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+}
+
+/*
+ * Mode terang (bawaan), tema hijau Konsep 3 "BOKA". Kontras diuji WCAG AA:
+ * teks 15,7:1; hijau di latar 5,9:1; teks tombol hijau 6,3:1.
+ */
+:root {
+    --background: #f6f8f3;
+    --foreground: #14201a;
+    --card: #ffffff;
+    --card-foreground: #14201a;
+    --popover: #ffffff;
+    --popover-foreground: #14201a;
+    --primary: #2f6b4f;
+    --primary-foreground: #ffffff;
+    --primary-soft: #e2efe6;
+    --secondary: #e9efe8;
+    --secondary-foreground: #1f3a2c;
+    --muted: #e9efe8;
+    --muted-foreground: #536159;
+    --accent: #e2efe6;
+    --accent-foreground: #1f4d38;
+    --destructive: #b42318;
+    --destructive-foreground: #b42318;
+    --border: #d9e3db;
+    --input: #c9d6cc;
+    --ring: #2f6b4f;
+
+    /* Emas kunyit hanya sebagai latar (teks gelap di atasnya). */
+    --gold: #d9a21b;
+    --gold-foreground: #14201a;
+    --gold-soft: #fbf1d3;
+    --leaf: #2f6b4f;
+    --leaf-soft: #e2efe6;
+    --maroon: #7a1e2c;
+    --hero: #1f4d38;
+    --hero-foreground: #f6f8f3;
+
+    /* Warna logo b: batang, lingkaran, belah ketupat. */
+    --logo-stem: #2f6b4f;
+    --logo-ring: #d9a21b;
+    --logo-diamond: #7a1e2c;
+
+    --chart-1: #2f6b4f;
+    --chart-2: #d9a21b;
+    --chart-3: #7a1e2c;
+    --chart-4: #5b8f74;
+    --chart-5: #1f5468;
+    --radius: 0.75rem;
+    --sidebar: #eef3ec;
+    --sidebar-foreground: #14201a;
+    --sidebar-primary: #2f6b4f;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #dfeae1;
+    --sidebar-accent-foreground: #1f4d38;
+    --sidebar-border: #d9e3db;
+    --sidebar-ring: #2f6b4f;
+}
+
+/*
+ * Mode gelap: latar hijau-arang, kartu sedikit lebih terang, aksen dicerahkan.
+ * Kontras diuji WCAG AA: teks 15,8:1; hijau di latar 8,8:1; teks redup 8,6:1.
+ */
+.dark {
+    --background: #0e1511;
+    --foreground: #e6efe8;
+    --card: #151f19;
+    --card-foreground: #e6efe8;
+    --popover: #18241d;
+    --popover-foreground: #e6efe8;
+    --primary: #6cc49a;
+    --primary-foreground: #0b140f;
+    --primary-soft: #1b3326;
+    --secondary: #1c2922;
+    --secondary-foreground: #e6efe8;
+    --muted: #1c2922;
+    --muted-foreground: #a2b5a9;
+    --accent: #203629;
+    --accent-foreground: #d5ecdd;
+    --destructive: #f97066;
+    --destructive-foreground: #f97066;
+    --border: #2f4337;
+    --input: #3a5043;
+    --ring: #6cc49a;
+
+    --gold: #e3b23c;
+    --gold-foreground: #0e1511;
+    --gold-soft: #262b17;
+    --leaf: #6cc49a;
+    --leaf-soft: #1b3326;
+    --maroon: #d45a6b;
+    --hero: #163824;
+    --hero-foreground: #eaf3ec;
+
+    --logo-stem: #4e9a72;
+    --logo-ring: #e3b23c;
+    --logo-diamond: #d45a6b;
+
+    --chart-1: #6cc49a;
+    --chart-2: #e3b23c;
+    --chart-3: #d45a6b;
+    --chart-4: #9ccfb3;
+    --chart-5: #7fb8cc;
+    --sidebar: #111a15;
+    --sidebar-foreground: #e6efe8;
+    --sidebar-primary: #6cc49a;
+    --sidebar-primary-foreground: #0b140f;
+    --sidebar-accent: #1c2922;
+    --sidebar-accent-foreground: #e6efe8;
+    --sidebar-border: #2f4337;
+    --sidebar-ring: #6cc49a;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+
+    /* Fokus keyboard selalu terlihat (12.4). */
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-ring;
+    }
+
+    /* Kolom isian minimal 16 px agar iOS tidak memperbesar layar. */
+    input, select, textarea {
+        font-size: max(16px, 1em);
+    }
+}
+
+@layer components {
+    .price {
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.01em;
+    }
+
+    .prose-boka p { @apply mb-4 leading-relaxed; }
+    .prose-boka h2 { @apply mt-8 mb-3 text-xl font-bold; }
+    .prose-boka ul { @apply mb-4 list-disc pl-6; }
+    .prose-boka a { @apply text-primary underline underline-offset-4; }
+}
+
+/* Semua animasi dimatikan saat pengguna meminta gerak minimal (12.3). */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

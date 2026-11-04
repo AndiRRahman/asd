@@ -1,0 +1,47 @@
+<!--
+  Evaluasi server MCP "Boka Toko" (spesifikasi bagian 14).
+  Jawaban diverifikasi terhadap data seed (php artisan migrate:fresh --seed) dalam 30 hari setelah seeding,
+  memakai token Admin Transaksi (transaksi@boka.test). Semua pertanyaan hanya butuh tool read-only.
+-->
+<evaluation>
+  <qa_pair>
+    <question>Dalam 30 hari terakhir, produsen mana yang menghasilkan omzet barang tertinggi dari pesanan yang sudah dibayar? Jawab dengan nama produsennya.</question>
+    <answer>Karang Taruna Sipakatau</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Berapa total pendapatan (grand total, rupiah bulat tanpa titik) dari semua pesanan yang sudah dibayar dalam 30 hari terakhir?</question>
+    <answer>193406</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Jika omzet barang dalam 30 hari terakhir dijumlahkan per jenis produsen, jenis mana yang lebih besar: Karang Taruna atau UMKM?</question>
+    <answer>UMKM</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Berapa omzet harian tertinggi (rupiah bulat tanpa titik) dalam 30 hari terakhir?</question>
+    <answer>57100</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Berapa banyak kata kunci berbeda yang dicari warga dalam 30 hari terakhir tetapi tidak menemukan produk sama sekali?</question>
+    <answer>2</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Berapa varian produk yang stoknya sudah habis (stok 0)?</question>
+    <answer>2</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Produk rempah yang stoknya habis dikirim dari titik asal mana? Jawab dengan nama titik asalnya.</question>
+    <answer>Titik Kahu</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Berapa varian yang stoknya berada di atau di bawah ambang stok menipis, termasuk yang habis?</question>
+    <answer>7</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Di antara varian yang habis stoknya dan dikirim dari Gudang Watampone, apa SKU-nya?</question>
+    <answer>SLD-0007-MARUN</answer>
+  </qa_pair>
+  <qa_pair>
+    <question>Berapa jumlah pesanan berstatus selesai yang berisi produk dari UMKM Bajo Bahari dalam 30 hari terakhir?</question>
+    <answer>1</answer>
+  </qa_pair>
+</evaluation>
