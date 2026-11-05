@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\Post;
 use App\Models\Product;
 use App\Support\Present;
 use Illuminate\Http\Request;
@@ -32,5 +33,13 @@ class HomeController extends Controller
             ]),
             'products' => Present::productCards($products),
         ]);
+    }
+
+    public static function postCard(Post $post): array
+    {
+        return [
+            'title' => $post->title, 'slug' => $post->slug, 'type' => $post->type, 'excerpt' => $post->excerpt,
+            'cover' => $post->cover, 'location' => $post->location, 'published_at' => $post->published_at?->toIso8601String(),
+        ];
     }
 }

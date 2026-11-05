@@ -9,7 +9,11 @@ type Replacements = Record<string, string | number>;
 export function useT() {
     const { translations } = usePage().props;
 
-    return (key: string, replacements: Replacements = {}): string => {
+    return (key: string, replacements: Replacements | string = {}): string => {
+        if (typeof replacements === 'string') {
+            return translations[key] ?? replacements;
+        }
+
         let text = translations[key] ?? key;
 
         for (const [name, value] of Object.entries(replacements)) {

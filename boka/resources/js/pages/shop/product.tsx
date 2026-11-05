@@ -1,5 +1,5 @@
 import { Deferred, Link, router, usePage } from '@inertiajs/react';
-import { Bell, Heart, MapPin, Minus, Plus, Share2, ShoppingBag, Store, Truck, Zap } from 'lucide-react';
+import { Bell, Heart, MapPin, MessageCircle, Minus, Plus, Share2, ShoppingBag, Store, Truck, Zap } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { CountdownBoxes, Price, ProducerBadge, ProductImage, Stars } from '@/components/shop/bits';
 import { ProductGrid, ProductGridSkeleton } from '@/components/shop/product-card';

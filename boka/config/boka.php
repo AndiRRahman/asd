@@ -11,7 +11,7 @@ return [
         'long_name' => env('APP_LONG_NAME', 'Tejaseku'),
         'tagline' => 'Platform Digitalisasi Pemasaran UMKM Desa',
         'email' => env('BOKA_EMAIL', 'halo@boka.id'),
-        'whatsapp' => env('BOKA_WHATSAPP', '0812-0000-0000'),
+        'whatsapp' => env('BOKA_WHATSAPP', '088246700573'),
         'address' => 'Jl. Jenderal Sudirman, Watampone, Kabupaten Bone, Sulawesi Selatan',
     ],
 
