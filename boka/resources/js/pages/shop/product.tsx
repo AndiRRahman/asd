@@ -113,14 +113,14 @@ export default function Product({ product, reviews, ratingDistribution, related,
         router.post(`/wishlist/${product.id}`, {}, { preserveScroll: true });
     }
 
-    const shareText = `${product.name} — ${new Intl.NumberFormat('id-ID').format(variant?.price ?? product.price)} di e-TEJASEKU\n${shareUrl}`;
+    const shareText = `${product.name} — ${new Intl.NumberFormat('id-ID').format(variant?.price ?? product.price)} di Tejaseku\n${shareUrl}`;
 
     const rawPhone = store?.whatsapp ?? '0812-0000-0000';
     let adminPhone = rawPhone.replace(/\D/g, '');
     if (adminPhone.startsWith('0')) {
         adminPhone = '62' + adminPhone.slice(1);
     }
-    const tanyaAdminText = `Halo Admin e-TEJASEKU, saya ingin bertanya tentang produk *${product.name}*:\n${shareUrl}`;
+    const tanyaAdminText = `Halo Admin Tejaseku, saya ingin bertanya tentang produk *${product.name}*:\n${shareUrl}`;
     const tanyaAdminUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(tanyaAdminText)}`;
 
     return (

@@ -33,7 +33,7 @@ export default function Cart({ lines, subtotal, hasIssues, packageCount, recomme
             })
             .join('\n\n');
 
-        const message = `Halo Admin e-TEJASEKU, saya ingin memesan produk berikut melalui keranjang belanja:\n\n${itemsList}\n\n*Total Estimasi: ${rupiah(subtotal)}*\n\nMohon info ketersediaan dan proses pemesanan selanjutnya. Terima kasih!`;
+        const message = `Halo Admin Tejaseku, saya ingin memesan produk berikut melalui keranjang belanja:\n\n${itemsList}\n\n*Total Estimasi: ${rupiah(subtotal)}*\n\nMohon info ketersediaan dan proses pemesanan selanjutnya. Terima kasih!`;
 
         return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
     }

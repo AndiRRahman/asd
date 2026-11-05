@@ -6,7 +6,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import ShopLayout from '@/layouts/shop-layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'e-TEJASEKU';
+const appName = import.meta.env.VITE_APP_NAME || 'Tejaseku';
 
 void createInertiaApp({
     title: (title) => (title ? `${title} · ${appName}` : `${appName}`),

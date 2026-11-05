@@ -7,8 +7,8 @@
 return [
 
     'store' => [
-        'name' => env('APP_NAME', 'e-TEJASEKU'),
-        'long_name' => env('APP_LONG_NAME', 'e-TEJASEKU'),
+        'name' => env('APP_NAME', 'Tejaseku'),
+        'long_name' => env('APP_LONG_NAME', 'Tejaseku'),
         'tagline' => 'Platform Digitalisasi Pemasaran UMKM Desa',
         'email' => env('BOKA_EMAIL', 'halo@boka.id'),
         'whatsapp' => env('BOKA_WHATSAPP', '0812-0000-0000'),

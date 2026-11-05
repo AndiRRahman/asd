@@ -160,7 +160,7 @@ export default function ProductForm({ categories, producers, origins, stockReaso
     return (
         <PanelPage
             title={product ? `Ubah: ${product.name.id}` : 'Produk baru'}
-            description={product ? `Status ${product.status}. Perubahan harga tercatat di log audit; pesanan lama tetap memakai harga saat dipesan.` : 'Produk baru tersimpan sebagai Draf.'}
+            description={product ? `Status ${product.status}. Perubahan harga tercatat di log audit; pesanan lama tetap memakai harga saat dipesan.` : 'Produk baru akan langsung otomatis aktif dan tampil di katalog publik toko.'}
             actions={product && (
                 <>
                     {product.status !== 'aktif' && <Button onClick={() => router.post(`/panel/produk/${product.id}/status`, { status: 'aktif' }, { preserveScroll: true })}><CheckCircle2 /> Aktifkan</Button>}

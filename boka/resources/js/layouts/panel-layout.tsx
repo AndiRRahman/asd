@@ -110,7 +110,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
             <AppContent variant="sidebar" className="min-w-0 overflow-x-clip">
                 <header className="flex h-14 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="size-10" />
-                    <span className="text-sm text-muted-foreground">Panel Admin Karang Taruna (e-TEJASEKU)</span>
+                    <span className="text-sm text-muted-foreground">Panel Admin Karang Taruna (Tejaseku)</span>
                 </header>
                 <div className="flex-1 p-4 md:p-6">{children}</div>
             </AppContent>

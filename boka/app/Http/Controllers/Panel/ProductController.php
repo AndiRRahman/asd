@@ -131,7 +131,7 @@ class ProductController extends Controller
             $product = Product::query()->create([
                 ...$this->productAttributes($data),
                 'slug' => Str::slug($data['name']['id']).'-'.Str::lower(Str::random(4)),
-                'status' => ProductStatus::Draf,
+                'status' => ProductStatus::Aktif,
                 'similarity_resolved' => true,
             ]);
             $this->recordDecision($request, $product, $data['similarity_decision'] ?? null);
@@ -141,9 +141,9 @@ class ProductController extends Controller
             return $product;
         });
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Produk tersimpan sebagai Draf. Aktifkan setelah syarat tayang terpenuhi.']);
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Produk berhasil disimpan dan langsung aktif di toko!']);
 
-        return redirect("/panel/produk/{$product->id}/edit");
+        return redirect("/panel/produk");
     }
 
     public function update(Request $request, Product $product): RedirectResponse

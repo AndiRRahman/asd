@@ -38,7 +38,7 @@ function ChatAdminButton() {
     if (phone.startsWith('0')) {
         phone = '62' + phone.slice(1);
     }
-    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent('Halo Admin e-TEJASEKU, saya ingin bertanya tentang produk / pemesanan.')}`;
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent('Halo Admin Tejaseku, saya ingin bertanya tentang produk / pemesanan.')}`;
 
     return (
         <a
@@ -257,7 +257,7 @@ function SiteFooter() {
                 </div>
             </div>
             <MotifDivider className="mx-auto max-w-7xl px-4" />
-            <p className="relative py-6 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} e-TEJASEKU. {t('footer.rights')}</p>
+            <p className="relative py-6 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} Tejaseku. {t('footer.rights')}</p>
         </footer>
     );
 }
@@ -295,7 +295,7 @@ function FloatingChatButton() {
     if (phone.startsWith('0')) {
         phone = '62' + phone.slice(1);
     }
-    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent('Halo Admin e-TEJASEKU, saya ingin bertanya tentang produk / pemesanan.')}`;
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent('Halo Admin Tejaseku, saya ingin bertanya tentang produk / pemesanan.')}`;
 
     return (
         <a
