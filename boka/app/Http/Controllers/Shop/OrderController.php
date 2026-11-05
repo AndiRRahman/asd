@@ -66,7 +66,7 @@ class OrderController extends Controller
             'transferred_at' => ['required', 'date', 'before_or_equal:today'],
         ]);
 
-        $payments->submitProof($order, $request->user(), $data['file'], $data['sender_bank'], $data['sender_name'], $data['transferred_at']);
+        $payments->submitProof($order, $request->user() ?: $order->user, $data['file'], $data['sender_bank'], $data['sender_name'], $data['transferred_at']);
         Inertia::flash('toast', ['type' => 'success', 'message' => __('order.proof_uploaded')]);
 
         return back();
@@ -149,6 +149,19 @@ class OrderController extends Controller
     /** Pesanan orang lain menghasilkan 404, bukan 403 (bagian 11, K6). */
     private function find(Request $request, string $code): Order
     {
-        return $request->user()->orders()->where('code', $code)->firstOrFail();
+        $user = $request->user();
+        if ($user) {
+            $order = $user->orders()->where('code', $code)->first();
+            if ($order) {
+                return $order;
+            }
+        }
+
+        $sessionOrders = (array) $request->session()->get('guest_orders', []);
+        if (in_array($code, $sessionOrders, true)) {
+            return Order::query()->where('code', $code)->firstOrFail();
+        }
+
+        abort(404);
     }
 }

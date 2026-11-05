@@ -55,14 +55,16 @@ export function Price({
     price,
     compare,
     size = 'md',
+    showDiscount = false,
     className,
 }: {
     price: number;
     compare?: number | null;
     size?: 'sm' | 'md' | 'lg';
+    showDiscount?: boolean;
     className?: string;
 }) {
-    const percent = discountPercent(price, compare ?? null);
+    const percent = showDiscount ? discountPercent(price, compare ?? null) : null;
 
     return (
         <div className={cn('flex flex-wrap items-baseline gap-x-2 gap-y-0.5', className)}>

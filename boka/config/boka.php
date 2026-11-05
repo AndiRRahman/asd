@@ -7,15 +7,15 @@
 return [
 
     'store' => [
-        'name' => 'Boka',
-        'long_name' => 'Bone Karya',
-        'tagline' => 'Karya Karang Taruna & UMKM Kabupaten Bone',
+        'name' => env('APP_NAME', 'e-TEJASEKU'),
+        'long_name' => env('APP_LONG_NAME', 'e-TEJASEKU'),
+        'tagline' => 'Platform Digitalisasi Pemasaran UMKM Desa',
         'email' => env('BOKA_EMAIL', 'halo@boka.id'),
         'whatsapp' => env('BOKA_WHATSAPP', '0812-0000-0000'),
         'address' => 'Jl. Jenderal Sudirman, Watampone, Kabupaten Bone, Sulawesi Selatan',
     ],
 
-    'locales' => ['id', 'en'],
+    'locales' => ['id'],
 
     // Bagian 2 meminta 2FA wajib untuk staf. Atas keputusan klien, 2FA dimatikan sementara karena
     // pengguna belum familiar. BOKA_TWO_FACTOR=true menyalakan lagi fitur 2FA, kewajibannya di panel,

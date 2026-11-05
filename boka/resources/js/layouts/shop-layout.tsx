@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { Home, LayoutGrid, LogOut, Moon, Package, Search, Settings, ShieldCheck, ShoppingBag, Sun, User, Heart, MapPin } from 'lucide-react';
+import { Home, LayoutGrid, LogOut, MessageCircle, Moon, Package, Search, Settings, ShieldCheck, ShoppingBag, Sun, User, Heart, MapPin } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { CategoryIcon } from '@/components/shop/bits';
 import { BokaLogo, MotifDivider, Walasuji } from '@/components/shop/brand';
@@ -28,6 +28,29 @@ function LocaleSwitch() {
                 </button>
             ))}
         </div>
+    );
+}
+
+function ChatAdminButton() {
+    const { store } = usePage<{ store?: { whatsapp?: string } }>().props;
+    const rawPhone = store?.whatsapp ?? '0812-0000-0000';
+    let phone = rawPhone.replace(/\D/g, '');
+    if (phone.startsWith('0')) {
+        phone = '62' + phone.slice(1);
+    }
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent('Halo Admin e-TEJASEKU, saya ingin bertanya tentang produk / pemesanan.')}`;
+
+    return (
+        <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-full bg-[#25D366]/10 px-3 py-1.5 text-xs font-bold text-[#128C7E] transition-colors hover:bg-[#25D366] hover:text-white dark:bg-[#25D366]/20 dark:text-[#25D366] dark:hover:bg-[#25D366] dark:hover:text-white"
+            aria-label="Chat Admin via WhatsApp"
+        >
+            <MessageCircle className="size-4" />
+            <span className="hidden sm:inline">Chat Admin</span>
+        </a>
     );
 }
 
@@ -144,9 +167,7 @@ function SiteHeader({ onCategories }: { onCategories: () => void }) {
                 </button>
                 <SearchBox className="hidden flex-1 md:block" />
                 <div className="ml-auto flex items-center gap-1 md:ml-0">
-                    <div className="hidden sm:block">
-                        <LocaleSwitch />
-                    </div>
+                    <ChatAdminButton />
                     <ThemeToggle />
                     <CartButton />
                     <AccountMenu />
@@ -164,11 +185,6 @@ function SiteHeader({ onCategories }: { onCategories: () => void }) {
                             </Link>
                         </li>
                     ))}
-                    <li className="ml-auto">
-                        <Link href={localePath('/kabar')} className="block rounded-full px-3 py-1.5 whitespace-nowrap text-muted-foreground hover:bg-accent hover:text-foreground">
-                            {t('nav.stories')}
-                        </Link>
-                    </li>
                 </ul>
             </nav>
         </header>
@@ -229,7 +245,6 @@ function SiteFooter() {
                 <div>
                     <h2 className="mb-3 text-sm font-bold">{t('footer.help')}</h2>
                     <ul className="space-y-1.5 text-sm">
-                        <li><Link className="text-muted-foreground hover:text-primary" href={localePath('/rekening-resmi')}>{t('footer.official_accounts')}</Link></li>
                         <li><Link className="text-muted-foreground hover:text-primary" href={localePath('/halaman/kebijakan-privasi')}>{t('footer.privacy')}</Link></li>
                         <li><Link className="text-muted-foreground hover:text-primary" href={localePath('/halaman/syarat-ketentuan')}>{t('footer.terms')}</Link></li>
                         <li><Link className="text-muted-foreground hover:text-primary" href={localePath('/halaman/kebijakan-pengembalian')}>{t('footer.returns')}</Link></li>
@@ -237,13 +252,12 @@ function SiteFooter() {
                     </ul>
                 </div>
                 <div className="space-y-3">
-                    <h2 className="text-sm font-bold">{t('footer.safety_title')}</h2>
-                    <p className="rounded-xl border border-gold/40 bg-gold-soft p-3 text-sm">{t('footer.safety_body')}</p>
-                    <div className="sm:hidden"><LocaleSwitch /></div>
+                    <h2 className="text-sm font-bold">Pemesanan Langsung</h2>
+                    <p className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-sm text-muted-foreground">Pemesanan dilakukan langsung via WhatsApp atau tunai/COD saat barang diterima.</p>
                 </div>
             </div>
             <MotifDivider className="mx-auto max-w-7xl px-4" />
-            <p className="relative py-6 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} Boka · Bone Karya. {t('footer.rights')}</p>
+            <p className="relative py-6 text-center text-xs text-muted-foreground">© {new Date().getFullYear()} e-TEJASEKU. {t('footer.rights')}</p>
         </footer>
     );
 }
@@ -274,6 +288,29 @@ function CategorySheet({ open, onOpenChange }: { open: boolean; onOpenChange: (o
     );
 }
 
+function FloatingChatButton() {
+    const { store } = usePage<{ store?: { whatsapp?: string } }>().props;
+    const rawPhone = store?.whatsapp ?? '0812-0000-0000';
+    let phone = rawPhone.replace(/\D/g, '');
+    if (phone.startsWith('0')) {
+        phone = '62' + phone.slice(1);
+    }
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent('Halo Admin e-TEJASEKU, saya ingin bertanya tentang produk / pemesanan.')}`;
+
+    return (
+        <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fixed right-5 bottom-20 z-40 flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-sm font-bold text-white shadow-lg transition-transform hover:scale-105 hover:bg-[#20ba5a] sm:bottom-6"
+            aria-label="Hubungi Admin via WhatsApp"
+        >
+            <MessageCircle className="size-5" />
+            <span>Chat Admin</span>
+        </a>
+    );
+}
+
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
     const t = useT();
     const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -289,6 +326,7 @@ export default function ShopLayout({ children }: { children: React.ReactNode }) 
                 {children}
             </main>
             <SiteFooter />
+            <FloatingChatButton />
             <BottomNav onCategories={() => setCategoriesOpen(true)} />
             <CategorySheet open={categoriesOpen} onOpenChange={setCategoriesOpen} />
         </div>

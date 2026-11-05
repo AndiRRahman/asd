@@ -43,6 +43,7 @@ export type Variant = {
 
 export type ProductDetail = ProductCard & {
     description: string | null;
+    brewing_instructions?: string | null;
     images: ImageData[];
     category: {
         name: string;

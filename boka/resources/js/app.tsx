@@ -6,10 +6,10 @@ import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import ShopLayout from '@/layouts/shop-layout';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Boka';
+const appName = import.meta.env.VITE_APP_NAME || 'e-TEJASEKU';
 
 void createInertiaApp({
-    title: (title) => (title ? `${title} · ${appName}` : `${appName} · Bone Karya`),
+    title: (title) => (title ? `${title} · ${appName}` : `${appName}`),
     layout: (name) => {
         switch (true) {
             case name.startsWith('auth/'):

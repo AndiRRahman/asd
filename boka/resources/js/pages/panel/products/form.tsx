@@ -87,6 +87,7 @@ export default function ProductForm({ categories, producers, origins, stockReaso
     const form = useForm({
         name: { id: product?.name.id ?? '', en: product?.name.en ?? '' },
         description: { id: product?.description.id ?? '', en: product?.description.en ?? '' },
+        brewing_instructions: { id: (product as any)?.brewing_instructions?.id ?? '', en: (product as any)?.brewing_instructions?.en ?? '' },
         category_id: product?.category_id ?? '',
         producer_id: product?.producer_id ?? '',
         origin_id: product?.origin_id ?? '',
@@ -180,27 +181,22 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                 <div className="space-y-6">
                     <Card title="Informasi produk">
                         <div className="grid gap-4">
-                            <label className="grid gap-1.5 text-sm font-semibold">Nama (Indonesia, wajib)<input className={fieldClass} value={form.data.name.id} onChange={(e) => form.setData('name', { ...form.data.name, id: e.target.value })} /><InputError message={errors['name.id']} /></label>
-                            <label className="grid gap-1.5 text-sm font-semibold">Nama (Inggris, opsional)<input className={fieldClass} value={form.data.name.en ?? ''} onChange={(e) => form.setData('name', { ...form.data.name, en: e.target.value })} /></label>
-                            <label className="grid gap-1.5 text-sm font-semibold">Deskripsi (Indonesia)<textarea rows={5} className="rounded-lg border border-input bg-card p-3 font-normal" value={form.data.description.id ?? ''} onChange={(e) => form.setData('description', { ...form.data.description, id: e.target.value })} /></label>
-                            <label className="grid gap-1.5 text-sm font-semibold">Deskripsi (Inggris, opsional)<textarea rows={3} className="rounded-lg border border-input bg-card p-3 font-normal" value={form.data.description.en ?? ''} onChange={(e) => form.setData('description', { ...form.data.description, en: e.target.value })} /></label>
+                            <label className="grid gap-1.5 text-sm font-semibold">Nama Produk (wajib)<input className={fieldClass} value={form.data.name.id} onChange={(e) => form.setData('name', { id: e.target.value, en: '' })} /><InputError message={errors['name.id']} /></label>
+                            <label className="grid gap-1.5 text-sm font-semibold">Deskripsi Produk<textarea rows={5} className="rounded-lg border border-input bg-card p-3 font-normal" value={form.data.description.id ?? ''} onChange={(e) => form.setData('description', { id: e.target.value, en: '' })} /></label>
+                            <label className="grid gap-1.5 text-sm font-semibold">Cara Seduh / Petunjuk Penyajian (opsional)<textarea rows={3} className="rounded-lg border border-input bg-card p-3 font-normal" placeholder="Contoh: Seduh dengan air 90°C selama 3 menit..." value={form.data.brewing_instructions.id ?? ''} onChange={(e) => form.setData('brewing_instructions', { id: e.target.value, en: '' })} /></label>
                             <label className="grid gap-1.5 text-sm font-semibold">Tag (pisahkan dengan koma, dipakai rekomendasi)<input className={fieldClass} value={form.data.tags} onChange={(e) => form.setData('tags', e.target.value)} placeholder="kopi, oleh-oleh" /></label>
                         </div>
                     </Card>
 
                     <Card title="Varian, harga, dan stok" actions={<Button type="button" variant="outline" size="sm" onClick={() => form.setData('variants', [...form.data.variants, emptyVariant()])}><Plus /> Varian</Button>}>
-                        <p className="mb-4 text-xs text-muted-foreground">Produk tanpa pilihan tetap punya satu varian bawaan. SKU kosong dibuat otomatis (contoh KOP-0042-250G).</p>
                         <div className="space-y-4">
                             {form.data.variants.map((v, i) => (
                                 <div key={v.id ?? `new-${i}`} className="rounded-xl border p-4">
-                                    <div className="grid gap-3 sm:grid-cols-3">
-                                        <label className="grid gap-1 text-xs font-semibold">Nama opsi (mis. Berat)<input className={fieldClass} value={Object.keys(v.options)[0] ?? ''} onChange={(e) => setVariant(i, { options: e.target.value ? { [e.target.value]: Object.values(v.options)[0] ?? '' } : {} })} /></label>
+                                    <div className="grid gap-3 sm:grid-cols-2">
+                                        <label className="grid gap-1 text-xs font-semibold">Nama opsi (mis. Ukuran / Berat)<input className={fieldClass} value={Object.keys(v.options)[0] ?? ''} onChange={(e) => setVariant(i, { options: e.target.value ? { [e.target.value]: Object.values(v.options)[0] ?? '' } : {} })} /></label>
                                         <label className="grid gap-1 text-xs font-semibold">Nilai opsi (mis. 250 g)<input className={fieldClass} value={Object.values(v.options)[0] ?? ''} onChange={(e) => setVariant(i, { options: { [Object.keys(v.options)[0] || 'Varian']: e.target.value } })} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">SKU<input className={fieldClass} value={v.sku} onChange={(e) => setVariant(i, { sku: e.target.value })} placeholder="otomatis" /><InputError message={errors[`variants.${i}.sku`]} /></label>
                                         <label className="grid gap-1 text-xs font-semibold">Harga jual (Rp)<input className={fieldClass} type="number" value={v.price} onChange={(e) => setVariant(i, { price: e.target.value === '' ? '' : Number(e.target.value) })} /><InputError message={errors[`variants.${i}.price`]} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Harga coret (opsional)<input className={fieldClass} type="number" value={v.compare_price ?? ''} onChange={(e) => setVariant(i, { compare_price: e.target.value === '' ? '' : Number(e.target.value) })} /><InputError message={errors[`variants.${i}.compare_price`]} /></label>
                                         <label className="grid gap-1 text-xs font-semibold">Berat (gram)<input className={fieldClass} type="number" value={v.weight_gram} onChange={(e) => setVariant(i, { weight_gram: e.target.value === '' ? '' : Number(e.target.value) })} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Barcode (opsional)<input className={fieldClass} value={v.barcode ?? ''} onChange={(e) => setVariant(i, { barcode: e.target.value })} /><InputError message={errors[`variants.${i}.barcode`]} /></label>
                                         <label className="grid gap-1 text-xs font-semibold">Ambang stok menipis<input className={fieldClass} type="number" value={v.low_stock_threshold} onChange={(e) => setVariant(i, { low_stock_threshold: e.target.value === '' ? '' : Number(e.target.value) })} /></label>
                                         <label className="grid gap-1 text-xs font-semibold">Batas beli per pesanan<input className={fieldClass} type="number" value={v.max_per_order ?? ''} onChange={(e) => setVariant(i, { max_per_order: e.target.value === '' ? '' : Number(e.target.value) })} placeholder="tanpa batas" /></label>
                                     </div>
@@ -241,7 +237,7 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                     </Card>
 
                     <Card title="Foto">
-                        <p className="mb-3 text-xs text-muted-foreground">JPG, PNG, atau WebP, lebar minimal 800 px, maksimal 10 MB. Foto berlatar polos paling bagus.</p>
+                        <p className="mb-3 text-xs text-muted-foreground">JPG, PNG, atau WebP, maksimal 5 MB. Foto akan otomatis dikonversi ke format WebP teroptimasi.</p>
                         <div className="grid grid-cols-3 gap-2">
                             {product?.images.filter((img) => !form.data.remove_image_ids.includes(img.id)).map((img) => (
                                 <div key={img.id} className={cn('relative overflow-hidden rounded-lg border-2', (form.data.cover_image_id ?? (img.is_cover ? img.id : null)) === img.id ? 'border-primary' : 'border-transparent')}>

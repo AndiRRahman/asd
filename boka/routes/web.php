@@ -29,7 +29,6 @@ $content = function (string $prefix) {
 };
 
 Route::group(['localized' => true], fn () => $content(''));
-Route::group(['localized' => true, 'prefix' => 'en'], fn () => $content('en.'));
 
 Route::middleware('throttle:search')->group(function () {
     Route::get('cari/saran', [SearchController::class, 'suggest'])->name('search.suggest');
@@ -52,11 +51,18 @@ Route::delete('keranjang/{variant}', [CartController::class, 'destroy'])->name('
 Route::post('preferensi/bahasa', [AccountController::class, 'locale'])->name('preferences.locale');
 Route::post('preferensi/tema', [AccountController::class, 'theme'])->name('preferences.theme');
 
+Route::get('wilayah', [AccountController::class, 'destinations'])->middleware('throttle:60,1')->name('destinations');
+
+// Checkout dan pesanan dapat diakses langsung tanpa harus login (Pesan Tanpa Login).
+Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout');
+Route::post('checkout/rincian', [CheckoutController::class, 'quote'])->name('checkout.quote');
+Route::post('checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('checkout.store');
+Route::get('pesanan/{code}', [OrderController::class, 'show'])->name('orders.show');
+Route::get('pesanan/{code}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+Route::post('pesanan/{code}/bukti', [OrderController::class, 'proof'])->middleware('throttle:proof-upload')->name('orders.proof');
+
 Route::middleware('auth')->group(function () {
     Route::get('pesanan', [OrderController::class, 'index'])->name('orders');
-    Route::get('pesanan/{code}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('pesanan/{code}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
-    Route::post('pesanan/{code}/bukti', [OrderController::class, 'proof'])->middleware('throttle:proof-upload')->name('orders.proof');
     Route::post('pesanan/{code}/batal', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::post('pesanan/{code}/diterima', [OrderController::class, 'complete'])->name('orders.complete');
     Route::post('pesanan/{code}/ulasan', [OrderController::class, 'review'])->name('orders.review');
@@ -66,17 +72,9 @@ Route::middleware('auth')->group(function () {
     Route::put('akun/alamat/{id}', [AccountController::class, 'updateAddress'])->name('addresses.update');
     Route::delete('akun/alamat/{id}', [AccountController::class, 'destroyAddress'])->name('addresses.destroy');
     Route::get('akun/data-saya', [AccountController::class, 'exportData'])->name('account.export');
-    Route::get('wilayah', [AccountController::class, 'destinations'])->middleware('throttle:60,1')->name('destinations');
 
     Route::get('wishlist', [AccountController::class, 'wishlist'])->name('wishlist');
     Route::post('wishlist/{product}', [AccountController::class, 'toggleWishlist'])->name('wishlist.toggle');
-});
-
-// Checkout hanya untuk email terverifikasi (K8).
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('checkout', [CheckoutController::class, 'show'])->name('checkout');
-    Route::post('checkout/rincian', [CheckoutController::class, 'quote'])->name('checkout.quote');
-    Route::post('checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1')->name('checkout.store');
 
     // Tujuan bawaan Fortify setelah registrasi dan verifikasi email: staf ke panel, Pembeli ke beranda.
     Route::get('dashboard', fn () => redirect(request()->user()->can('panel.akses') ? '/panel' : '/'))->name('dashboard');

@@ -54,6 +54,7 @@ final class Present
         return [
             ...self::productCard($product),
             'description' => $product->description,
+            'brewing_instructions' => $product->brewing_instructions,
             'images' => $product->images->map->toFront()->all(),
             'category' => $product->category ? ['name' => $product->category->name, 'slug' => $product->category->slug, 'parent' => $product->category->parent ? ['name' => $product->category->parent->name, 'slug' => $product->category->parent->slug] : null] : null,
             'tags' => $product->tags->pluck('name'),

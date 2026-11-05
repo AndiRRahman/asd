@@ -22,7 +22,7 @@ class Product extends Model
 {
     use Audited, HasHashId, HasTranslations, Searchable, SoftDeletes;
 
-    public array $translatable = ['name', 'description'];
+    public array $translatable = ['name', 'description', 'brewing_instructions'];
 
     /** Indeks Meilisearch memuat semua bahasa, jadi "coffee" tetap menemukan "Kopi Robusta Bone". */
     public function toSearchableArray(): array

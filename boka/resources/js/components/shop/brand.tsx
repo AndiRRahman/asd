@@ -21,12 +21,12 @@ export function BokaLogo({ className, compact = false }: { className?: string; c
             <BokaMark />
             <span className="flex flex-col leading-none">
                 <span className="flex items-end gap-0.5 text-[1.375rem] font-extrabold tracking-[-0.05em] text-foreground">
-                    boka
+                    e-TEJASEKU
                     <svg viewBox="0 0 24 24" aria-hidden="true" className="mb-1 size-2 fill-logo-ring">
                         <polygon points="12,1 23,12 12,23 1,12" />
                     </svg>
                 </span>
-                {!compact && <span className="mt-0.5 text-[9px] font-bold tracking-[0.32em] text-muted-foreground uppercase">Bone Karya</span>}
+                {!compact && <span className="mt-0.5 text-[9px] font-bold tracking-[0.32em] text-muted-foreground uppercase">e-TEJASEKU</span>}
             </span>
         </span>
     );

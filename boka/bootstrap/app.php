@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-            Route::middleware(['web', 'auth', 'verified', 'panel'])
+            Route::middleware(['web', 'auth', 'panel'])
                 ->prefix('panel')
                 ->name('panel.')
                 ->group(base_path('routes/panel.php'));

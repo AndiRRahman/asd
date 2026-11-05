@@ -18,6 +18,7 @@ use App\Models\ProductSimilarityDecision;
 use App\Models\ProductVariant;
 use App\Models\Tag;
 use App\Support\HashId;
+use App\Support\ImageConverter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -73,6 +74,7 @@ class ProductController extends Controller
                 'id' => $product->hashid, 'slug' => $product->slug, 'status' => $product->status->value,
                 'name' => ['id' => $product->getTranslation('name', 'id', false), 'en' => $product->getTranslation('name', 'en', false)],
                 'description' => ['id' => $product->getTranslation('description', 'id', false), 'en' => $product->getTranslation('description', 'en', false)],
+                'brewing_instructions' => ['id' => $product->getTranslation('brewing_instructions', 'id', false), 'en' => $product->getTranslation('brewing_instructions', 'en', false)],
                 'category_id' => $product->category_id, 'producer_id' => $product->producer_id, 'origin_id' => $product->origin_id,
                 'is_featured' => $product->is_featured, 'tags' => $product->tags->pluck('name')->implode(', '),
                 'similarity_resolved' => $product->similarity_resolved,
@@ -321,9 +323,9 @@ class ProductController extends Controller
     private function syncImagesAndTags(Request $request, Product $product, array $data): void
     {
         foreach ($request->file('images', []) as $i => $file) {
-            [$width, $height] = getimagesize($file->getRealPath()) ?: [0, 0];
+            $converted = ImageConverter::convertAndStore($file, 'produk');
             $product->images()->create([
-                'path' => $file->store('produk', 'public'), 'width' => $width, 'height' => $height,
+                'path' => $converted['path'], 'width' => $converted['width'], 'height' => $converted['height'],
                 'is_cover' => ! $product->images()->exists() && $i === 0, 'sort_order' => $product->images()->count(),
             ]);
         }
@@ -347,6 +349,7 @@ class ProductController extends Controller
             'name' => array_filter($data['name']),
             'name_normalized' => SimilarityChecker::normalize($data['name']['id']),
             'description' => array_filter($data['description'] ?? []),
+            'brewing_instructions' => array_filter($data['brewing_instructions'] ?? []),
             'category_id' => $data['category_id'], 'producer_id' => $data['producer_id'], 'origin_id' => $data['origin_id'],
             'is_featured' => (bool) ($data['is_featured'] ?? false),
         ];
@@ -357,6 +360,7 @@ class ProductController extends Controller
         $data = $request->validate([
             'name.id' => ['required', 'string', 'max:200'], 'name.en' => ['nullable', 'string', 'max:200'],
             'description.id' => ['nullable', 'string', 'max:5000'], 'description.en' => ['nullable', 'string', 'max:5000'],
+            'brewing_instructions.id' => ['nullable', 'string', 'max:5000'], 'brewing_instructions.en' => ['nullable', 'string', 'max:5000'],
             'category_id' => ['required', 'exists:categories,id'], 'producer_id' => ['required', 'exists:producers,id'],
             'origin_id' => ['required', 'exists:origins,id'], 'is_featured' => ['boolean'], 'tags' => ['nullable', 'string', 'max:300'],
             'variants' => ['required', 'array', 'min:1'],
@@ -370,7 +374,7 @@ class ProductController extends Controller
             'variants.*.weight_gram' => ['required', 'integer', 'min:1'],
             'variants.*.low_stock_threshold' => ['nullable', 'integer', 'min:0'],
             'variants.*.max_per_order' => ['nullable', 'integer', 'min:1'],
-            'images' => ['array'], 'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:10240', 'dimensions:min_width=800'],
+            'images' => ['array'], 'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'cover_image_id' => ['nullable', 'string'], 'remove_image_ids' => ['array'],
             'similarity_decision' => ['nullable', 'array'],
             'similarity_decision.action' => ['required_with:similarity_decision', 'in:tambah_stok,varian_baru,terpisah'],
@@ -379,7 +383,7 @@ class ProductController extends Controller
             'similarity_decision.candidate_ids' => ['array'],
             'similarity_decision.score' => ['nullable', 'numeric'],
             'similarity_decision.reason' => ['required_if:similarity_decision.action,terpisah', 'nullable', 'string', 'max:200'],
-        ], ['images.*.dimensions' => 'Lebar foto produk minimal 800 px.']);
+        ], ['images.*.max' => 'Ukuran foto produk maksimal 5 MB.']);
         $this->checkUniqueCodes($request, $product);
 
         return $this->decodeIds($data);

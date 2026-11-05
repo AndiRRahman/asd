@@ -62,13 +62,7 @@ Route::middleware('can:stok.kelola')->group(function () {
     Route::post('stok/opname/{opname}/posting', [StockController::class, 'postOpname'])->name('opname.post');
 });
 
-Route::middleware('can:pelanggan.kelola')->group(function () {
-    Route::get('pelanggan', [CustomerController::class, 'index'])->name('customers');
-    Route::post('pelanggan/{user}/status', [CustomerController::class, 'toggle'])->name('customers.toggle');
-    Route::post('pelanggan/{user}/blokir-checkout', [CustomerController::class, 'blockCheckout'])->name('customers.block');
-    Route::get('ulasan', [CustomerController::class, 'reviews'])->name('reviews');
-    Route::post('ulasan/{review}', [CustomerController::class, 'moderate'])->name('reviews.moderate');
-});
+// Modul pelanggan & ulasan dinonaktifkan sesuai permintaan.
 
 Route::middleware('can:laporan.lihat')->group(function () {
     Route::get('laporan', [ReportController::class, 'index'])->name('reports');

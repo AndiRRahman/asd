@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { AlertTriangle, Info, Minus, Package, Plus, ShoppingBag, Trash2 } from 'lucide-react';
+import { AlertTriangle, Info, MessageCircle, Minus, Package, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { EmptyState, Price, ProductImage } from '@/components/shop/bits';
 import { ProductGrid } from '@/components/shop/product-card';
 import { Seo } from '@/components/shop/seo';
@@ -14,10 +14,29 @@ type Props = { lines: CartLine[]; subtotal: number; hasIssues: boolean; packageC
 export default function Cart({ lines, subtotal, hasIssues, packageCount, recommendations }: Props) {
     const t = useT();
     const localePath = useLocalePath();
-    const { auth } = usePage().props;
+    const { store } = usePage<{ store?: { whatsapp?: string } }>().props;
 
     const update = (line: CartLine, qty: number) => router.patch(`/keranjang/${line.variant_id}`, { qty }, { preserveScroll: true });
     const remove = (line: CartLine) => router.delete(`/keranjang/${line.variant_id}`, { preserveScroll: true });
+
+    function generateWaCheckoutUrl() {
+        const rawPhone = store?.whatsapp ?? '0812-0000-0000';
+        let phone = rawPhone.replace(/\D/g, '');
+        if (phone.startsWith('0')) {
+            phone = '62' + phone.slice(1);
+        }
+
+        const itemsList = lines
+            .map((line, idx) => {
+                const label = line.variant_label ? ` (${line.variant_label})` : '';
+                return `${idx + 1}. *${line.product.name}*${label}\n   Jumlah: ${line.qty}x | Harga: ${rupiah(line.line_total)}`;
+            })
+            .join('\n\n');
+
+        const message = `Halo Admin e-TEJASEKU, saya ingin memesan produk berikut melalui keranjang belanja:\n\n${itemsList}\n\n*Total Estimasi: ${rupiah(subtotal)}*\n\nMohon info ketersediaan dan proses pemesanan selanjutnya. Terima kasih!`;
+
+        return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    }
 
     if (lines.length === 0) {
         return (
@@ -99,8 +118,10 @@ export default function Cart({ lines, subtotal, hasIssues, packageCount, recomme
                             {hasIssues ? (
                                 <Button size="lg" className="w-full" disabled>{t('cart.fix_first')}</Button>
                             ) : (
-                                <Button size="lg" className="w-full" asChild>
-                                    <Link href={auth.user ? '/checkout' : '/login'}>{auth.user ? t('cart.checkout') : t('cart.login_to_checkout')}</Link>
+                                <Button size="lg" className="w-full bg-[#25D366] text-white hover:bg-[#20ba5a]" asChild>
+                                    <a href={generateWaCheckoutUrl()} target="_blank" rel="noopener noreferrer">
+                                        <MessageCircle className="size-5" /> Pesan Sekarang via WhatsApp
+                                    </a>
                                 </Button>
                             )}
                         </div>

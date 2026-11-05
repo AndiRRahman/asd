@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { Zap } from 'lucide-react';
 import { useLocalePath, useT } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import type { ProductCard as ProductCardType } from '@/types/boka';
@@ -19,11 +18,6 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
         >
             <div className="relative overflow-hidden">
                 <ProductImage image={product.image} alt={product.name} priority={priority} className="transition-transform duration-300 group-hover:scale-[1.03]" />
-                {product.is_flash && (
-                    <span className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-full bg-gold px-2 py-0.5 text-[11px] font-bold text-gold-foreground">
-                        <Zap className="size-3" aria-hidden="true" /> {t('product.flash')}
-                    </span>
-                )}
                 {!product.in_stock && (
                     <span className="absolute inset-x-0 bottom-0 bg-foreground/80 py-1 text-center text-xs font-semibold text-background">{t('product.sold_out')}</span>
                 )}

@@ -163,7 +163,7 @@ return [
     'features' => [
         Features::registration(),
         Features::resetPasswords(),
-        Features::emailVerification(),
+        // Features::emailVerification(),
         // Rute 2FA tetap terdaftar, tetapi menunya disembunyikan selama BOKA_TWO_FACTOR=false
         // (lihat SecurityController dan config/boka.php).
         Features::twoFactorAuthentication([

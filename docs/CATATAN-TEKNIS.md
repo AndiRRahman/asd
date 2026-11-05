@@ -1,11 +1,19 @@
-# Boka (Bone Karya)
+# e-TEJASEKU
 
-Toko daring Karang Taruna dan UMKM Kabupaten Bone, fase 1, dibangun dari dokumen
-*Spesifikasi E-Commerce Karang Taruna & UMKM Kabupaten Bone* (2 November 2026).
+Platform "e-TEJASEKU" — platform digitalisasi pemasaran UMKM desa berupa website/marketplace sederhana disertai katalog produk interaktif berbasis digitalisasi yang menampilkan informasi produk, cara seduh, dan testimoni saat kemasan produk dipindai (scan) menggunakan kamera ponsel.
 
-Stack: Laravel 13, Inertia 3, React 19 + TypeScript dengan SSR, Tailwind 4, Fortify (2FA),
-Sanctum (API mobile), spatie/laravel-permission, spatie/laravel-activitylog, spatie/laravel-translatable,
-Laravel Scout, Laravel MCP, Pest.
+## Ringkasan Proyek & Spesifikasi
+
+- **a. Nama dan gambaran umum:** Platform "e-TEJASEKU" — platform digitalisasi pemasaran UMKM desa berupa website/marketplace sederhana disertai katalog produk interaktif berbasis digitalisasi yang menampilkan informasi produk, cara seduh, dan testimoni saat kemasan produk dipindai (scan) menggunakan kamera ponsel.
+- **b. Dasar penelitian:** mengacu pada kajian penerapan aplikasi platform digital pembelajaran berbasis android serta program komputer dalam pemasaran produk UMKM berbasis kearifan lokal yang telah diuji fungsinya oleh tim pengembang, serta telah melalui uji coba terbatas sehingga siap diimplementasikan pada karang taruna sebagai admin/pengelola.
+- **c. Kepemilikan KI:** hak kekayaan intelektual Hak Cipta platform dan program komputer diajukan atas nama Syahrul Mubarak Universitas Muslim Indonesia pada tahun 2021 dan 2022 dengan nomor pencatatan ciptaan EC00202166007 dan EC00202223770.
+- **d. Spesifikasi:** platform berbasis web responsif (dapat diakses melalui smartphone), fitur meliputi katalog produk, keranjang pemesanan sederhana, dan dashboard admin untuk karang taruna.
+- **e. Fungsi dan cara kerja:** konsumen memindai marker melalui kamera ponsel untuk menampilkan informasi produk secara interaktif (3D/animasi), sekaligus tautan pemesanan pada platform e-TEJASEKU.
+- **f. Kesesuaian dengan mitra:** menjawab kebutuhan karang taruna yang melek teknologi namun belum terarah pemanfaatannya, serta menjawab kebutuhan Mitra dalam membutuhkan kanal pemasaran digital dengan nilai tambah interaktif.
+- **g. Metode transfer:** pelatihan bertahap (dasar, lanjutan, dan praktik pendampingan UMKM) serta pendampingan pengelolaan hingga karang taruna mampu menjadi fasilitator/coach digital lokal (train the trainer).
+- **h. Keterikatan dengan level keberdayaan:** karang taruna bertransformasi dari sekedar pengguna media sosial pribadi menjadi mampu memfasilitasi digitalisasi pemasaran UMKM desa secara mandiri dan berkelanjutan.
+
+Stack: Laravel 13, Inertia 3, React 19 + TypeScript dengan SSR, Tailwind 4.
 
 ## Cara tercepat (Windows)
 

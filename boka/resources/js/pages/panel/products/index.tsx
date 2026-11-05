@@ -24,7 +24,7 @@ export default function Products({ products, filters }: { products: Paginated<Ro
                 {products.data.map((p) => (
                     <tr key={p.id} className="hover:bg-muted/40">
                         <td className="px-4 py-2">{p.image && <img src={p.image} alt="" className="size-12 rounded-md object-cover" />}</td>
-                        <td className="px-4 py-2 font-semibold">{p.name}<span className="block text-xs font-normal text-muted-foreground">{p.variants} varian · kode <span className="font-mono">{p.id}</span></span></td>
+                        <td className="px-4 py-2 font-semibold">{p.name}<span className="block text-xs font-normal text-muted-foreground">{p.variants} varian</span></td>
                         <td className="px-4 py-2">{p.producer}</td>
                         <td className="px-4 py-2">{p.category}</td>
                         <td className="price px-4 py-2">{p.price_min ? rupiah(p.price_min) : '-'}</td>

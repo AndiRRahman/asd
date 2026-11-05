@@ -28,7 +28,7 @@ class PriceCalculator
      * @param  bool  $strict  true saat membuat pesanan: semua paket wajib punya pilihan dan voucher wajib sah
      */
     public function quote(
-        User $user,
+        ?User $user,
         Collection $lines,
         ?Address $address,
         array $shippingChoices = [],
@@ -108,10 +108,14 @@ class PriceCalculator
         ];
     }
 
-    private function applyVoucher(?string $code, string $type, User $user, Collection $lines, int $subtotal, int $base, bool $strict): array
+    private function applyVoucher(?string $code, string $type, ?User $user, Collection $lines, int $subtotal, int $base, bool $strict): array
     {
         if (blank($code)) {
             return [0, null, null];
+        }
+
+        if (! $user) {
+            return [0, null, 'Voucher hanya dapat digunakan setelah masuk.'];
         }
 
         try {

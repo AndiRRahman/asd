@@ -3,6 +3,7 @@
 namespace App\Panel;
 
 use App\Support\HashId;
+use App\Support\ImageConverter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -90,7 +91,8 @@ abstract class Resource
     {
         foreach (static::fields() as $field) {
             if ($field['type'] === 'image' && $request->hasFile($field['name'])) {
-                $model->update([$field['name'] => '/storage/'.$request->file($field['name'])->store($field['directory'] ?? 'konten', 'public')]);
+                $converted = ImageConverter::convertAndStore($request->file($field['name']), $field['directory'] ?? 'konten');
+                $model->update([$field['name'] => '/storage/'.$converted['path']]);
             }
         }
     }

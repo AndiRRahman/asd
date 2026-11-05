@@ -76,7 +76,7 @@ function flyToCart(from: HTMLElement | null) {
 export default function Product({ product, reviews, ratingDistribution, related, wishlisted, inCart, shareUrl }: Props) {
     const t = useT();
     const localePath = useLocalePath();
-    const { auth, locale } = usePage().props;
+    const { auth, locale, store } = usePage<{ store?: { whatsapp?: string } }>().props;
     const [variantId, setVariantId] = useState(product.variants.find((v) => v.max_buyable > 0)?.id ?? product.variants[0]?.id);
     const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
     const already = inCart[String(variant?.id)] ?? 0;
@@ -113,7 +113,15 @@ export default function Product({ product, reviews, ratingDistribution, related,
         router.post(`/wishlist/${product.id}`, {}, { preserveScroll: true });
     }
 
-    const shareText = `${product.name} — ${new Intl.NumberFormat('id-ID').format(variant?.price ?? product.price)} rupiah di Boka\n${shareUrl}`;
+    const shareText = `${product.name} — ${new Intl.NumberFormat('id-ID').format(variant?.price ?? product.price)} di e-TEJASEKU\n${shareUrl}`;
+
+    const rawPhone = store?.whatsapp ?? '0812-0000-0000';
+    let adminPhone = rawPhone.replace(/\D/g, '');
+    if (adminPhone.startsWith('0')) {
+        adminPhone = '62' + adminPhone.slice(1);
+    }
+    const tanyaAdminText = `Halo Admin e-TEJASEKU, saya ingin bertanya tentang produk *${product.name}*:\n${shareUrl}`;
+    const tanyaAdminUrl = `https://wa.me/${adminPhone}?text=${encodeURIComponent(tanyaAdminText)}`;
 
     return (
         <>
@@ -186,12 +194,17 @@ export default function Product({ product, reviews, ratingDistribution, related,
                             </Button>
                         )}
 
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
+                            <Button variant="outline" asChild>
+                                <a href={tanyaAdminUrl} target="_blank" rel="noopener noreferrer" className="text-[#128C7E] hover:text-[#128C7E] dark:text-[#25D366]">
+                                    <MessageCircle className="size-4 text-[#25D366]" /> Chat Admin
+                                </a>
+                            </Button>
                             <Button variant="outline" onClick={toggleWishlist} aria-pressed={wishlisted}>
                                 <Heart className={cn(wishlisted && 'fill-primary text-primary', heartPop && 'animate-pop')} /> {t('product.wishlist')}
                             </Button>
                             <Button variant="outline" asChild>
-                                <a href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener noreferrer"><Share2 /> WhatsApp</a>
+                                <a href={`https://wa.me/?text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener noreferrer"><Share2 /> Bagikan</a>
                             </Button>
                         </div>
 
@@ -219,15 +232,26 @@ export default function Product({ product, reviews, ratingDistribution, related,
                 </div>
 
                 <div className="mt-10 grid gap-10 lg:grid-cols-[1.05fr_1fr]">
-                    <section>
-                        <h2 className="mb-3 text-lg font-extrabold">{t('product.description')}</h2>
-                        <p className="leading-relaxed whitespace-pre-line text-foreground/90">{product.description}</p>
-                        {product.tags.length > 0 && (
-                            <div className="mt-4 flex flex-wrap gap-2">
-                                {product.tags.map((tag) => <Link key={tag} href={localePath(`/produk?q=${encodeURIComponent(tag)}`)} className="rounded-full bg-muted px-3 py-1 text-xs font-medium">#{tag}</Link>)}
-                            </div>
+                    <div className="space-y-8">
+                        <section>
+                            <h2 className="mb-3 text-lg font-extrabold">{t('product.description')}</h2>
+                            <p className="leading-relaxed whitespace-pre-line text-foreground/90">{product.description}</p>
+                            {product.tags.length > 0 && (
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {product.tags.map((tag) => <Link key={tag} href={localePath(`/produk?q=${encodeURIComponent(tag)}`)} className="rounded-full bg-muted px-3 py-1 text-xs font-medium">#{tag}</Link>)}
+                                </div>
+                            )}
+                        </section>
+
+                        {product.brewing_instructions && (
+                            <section className="rounded-2xl border border-primary/20 bg-primary/5 p-5">
+                                <h2 className="mb-3 flex items-center gap-2 text-lg font-extrabold text-primary">
+                                    <span>☕</span> Cara Seduh / Penyajian
+                                </h2>
+                                <p className="leading-relaxed whitespace-pre-line text-foreground/90">{product.brewing_instructions}</p>
+                            </section>
                         )}
-                    </section>
+                    </div>
                     <section>
                         <h2 className="mb-3 text-lg font-extrabold">{t('product.reviews', { count: totalReviews })}</h2>
                         {reviews.length === 0 ? (

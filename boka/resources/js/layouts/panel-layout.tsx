@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import {
-    BadgePercent, Boxes, ClipboardList, CreditCard, FileClock, FileText, Image, LayoutDashboard, LogOut, MapPinned, MessageSquareQuote,
-    Package, Settings, ShieldCheck, Store, Tags, Truck, Users, UsersRound, Wrench, Zap, BarChart3,
+    Boxes, ClipboardList, CreditCard, FileClock, Image, LayoutDashboard, LogOut, MapPinned,
+    Package, Settings, ShieldCheck, Store, Tags, Truck, Users, Wrench, BarChart3,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { AppContent } from '@/components/app-content';
@@ -20,7 +20,6 @@ const GROUPS: { label: string; items: Item[] }[] = [
         label: 'Kerja harian',
         items: [
             { title: 'Antrean kerja', href: '/panel', icon: LayoutDashboard },
-            { title: 'Verifikasi pembayaran', href: '/panel/pembayaran', icon: CreditCard, can: 'pesanan.kelola' },
             { title: 'Pesanan', href: '/panel/pesanan', icon: ClipboardList, can: 'pesanan.kelola' },
         ],
     },
@@ -35,20 +34,14 @@ const GROUPS: { label: string; items: Item[] }[] = [
         ],
     },
     {
-        label: 'Promosi & konten',
+        label: 'Promosi',
         items: [
-            { title: 'Voucher', href: '/panel/kelola/voucher', icon: BadgePercent, can: 'promosi.kelola' },
-            { title: 'Flash sale', href: '/panel/kelola/flash-sale', icon: Zap, can: 'promosi.kelola' },
             { title: 'Banner', href: '/panel/kelola/banner', icon: Image, can: 'promosi.kelola' },
-            { title: 'Berita & dokumentasi', href: '/panel/kelola/post', icon: FileText, can: 'konten.kelola' },
-            { title: 'Halaman statis', href: '/panel/kelola/page', icon: FileText, can: 'konten.kelola' },
         ],
     },
     {
-        label: 'Pelanggan & laporan',
+        label: 'Laporan',
         items: [
-            { title: 'Pelanggan', href: '/panel/pelanggan', icon: UsersRound, can: 'pelanggan.kelola' },
-            { title: 'Ulasan', href: '/panel/ulasan', icon: MessageSquareQuote, can: 'pelanggan.kelola' },
             { title: 'Laporan', href: '/panel/laporan', icon: BarChart3, can: 'laporan.lihat' },
         ],
     },
@@ -56,7 +49,7 @@ const GROUPS: { label: string; items: Item[] }[] = [
         label: 'Super Admin',
         items: [
             { title: 'Pengguna panel', href: '/panel/pengguna', icon: Users, can: 'admin.kelola' },
-            { title: 'Pengaturan & rekening', href: '/panel/pengaturan', icon: Settings, can: 'pengaturan.kelola' },
+            { title: 'Pengaturan toko', href: '/panel/pengaturan', icon: Settings, can: 'pengaturan.kelola' },
             { title: 'Log audit', href: '/panel/audit', icon: FileClock },
             { title: 'Sistem', href: '/panel/sistem', icon: Wrench, can: 'pengaturan.kelola' },
         ],
@@ -117,7 +110,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
             <AppContent variant="sidebar" className="min-w-0 overflow-x-clip">
                 <header className="flex h-14 items-center gap-2 border-b px-4">
                     <SidebarTrigger className="size-10" />
-                    <span className="text-sm text-muted-foreground">Panel Admin Boka</span>
+                    <span className="text-sm text-muted-foreground">Panel Admin Karang Taruna (e-TEJASEKU)</span>
                 </header>
                 <div className="flex-1 p-4 md:p-6">{children}</div>
             </AppContent>
