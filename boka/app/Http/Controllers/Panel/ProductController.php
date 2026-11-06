@@ -357,12 +357,20 @@ class ProductController extends Controller
 
     private function productAttributes(array $data): array
     {
+        $originId = $data['origin_id'] ?? null;
+        if (! $originId && ! empty($data['producer_id'])) {
+            $producer = Producer::find($data['producer_id']);
+            $originId = $producer?->default_origin_id ?? Origin::query()->value('id');
+        }
+
         return [
             'name' => array_filter($data['name']),
             'name_normalized' => SimilarityChecker::normalize($data['name']['id']),
             'description' => array_filter($data['description'] ?? []),
             'brewing_instructions' => array_filter($data['brewing_instructions'] ?? []),
-            'category_id' => $data['category_id'], 'producer_id' => $data['producer_id'], 'origin_id' => $data['origin_id'],
+            'category_id' => $data['category_id'] ?? null,
+            'producer_id' => $data['producer_id'],
+            'origin_id' => $originId,
             'is_featured' => (bool) ($data['is_featured'] ?? false),
         ];
     }
@@ -373,8 +381,8 @@ class ProductController extends Controller
             'name.id' => ['required', 'string', 'max:200'], 'name.en' => ['nullable', 'string', 'max:200'],
             'description.id' => ['nullable', 'string', 'max:5000'], 'description.en' => ['nullable', 'string', 'max:5000'],
             'brewing_instructions.id' => ['nullable', 'string', 'max:5000'], 'brewing_instructions.en' => ['nullable', 'string', 'max:5000'],
-            'category_id' => ['required', 'exists:categories,id'], 'producer_id' => ['required', 'exists:producers,id'],
-            'origin_id' => ['required', 'exists:origins,id'], 'is_featured' => ['boolean'], 'tags' => ['nullable', 'string', 'max:300'],
+            'category_id' => ['nullable', 'exists:categories,id'], 'producer_id' => ['required', 'exists:producers,id'],
+            'origin_id' => ['nullable', 'exists:origins,id'], 'is_featured' => ['boolean'], 'tags' => ['nullable', 'string', 'max:300'],
             'variants' => ['required', 'array', 'min:1'],
             'variants.*.id' => ['nullable', 'string'],
             'variants.*.sku' => ['nullable', 'string', 'max:40', 'distinct'],

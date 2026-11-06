@@ -22,7 +22,7 @@ class ProductPublisher
             $missing[] = 'Tambahkan minimal 1 foto.';
         }
 
-        foreach (['category_id' => 'kategori', 'producer_id' => 'produsen', 'origin_id' => 'titik asal kirim'] as $field => $label) {
+        foreach (['producer_id' => 'produsen'] as $field => $label) {
             if (! $product->{$field}) {
                 $missing[] = "Pilih {$label}.";
             }

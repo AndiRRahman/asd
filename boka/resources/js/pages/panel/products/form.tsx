@@ -229,14 +229,23 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                 </div>
 
                 <div className="space-y-6">
-                    <Card title="Asal dan kategori">
+                    <Card title="Produsen">
                         <div className="grid gap-4">
-                            <label className="grid gap-1.5 text-sm font-semibold">Kategori<select className={fieldClass} value={form.data.category_id} onChange={(e) => form.setData('category_id', Number(e.target.value))}><option value="">Pilih</option>{categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}</select><InputError message={form.errors.category_id} /></label>
-                            <label className="grid gap-1.5 text-sm font-semibold">Produsen<select className={fieldClass} value={form.data.producer_id} onChange={(e) => {
-                                const producer = producers.find((p) => p.value === Number(e.target.value));
-                                form.setData((d) => ({ ...d, producer_id: Number(e.target.value), origin_id: d.origin_id || producer?.origin_id || '' }));
-                            }}><option value="">Pilih</option>{producers.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}</select><InputError message={form.errors.producer_id} /></label>
-                            <label className="grid gap-1.5 text-sm font-semibold">Titik asal kirim<select className={fieldClass} value={form.data.origin_id} onChange={(e) => form.setData('origin_id', Number(e.target.value))}><option value="">Pilih</option>{origins.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}</select><InputError message={form.errors.origin_id} /></label>
+                            <label className="grid gap-1.5 text-sm font-semibold">
+                                Produsen
+                                <select
+                                    className={fieldClass}
+                                    value={form.data.producer_id}
+                                    onChange={(e) => {
+                                        const producer = producers.find((p) => p.value === Number(e.target.value));
+                                        form.setData((d) => ({ ...d, producer_id: Number(e.target.value), origin_id: producer?.origin_id || d.origin_id || '' }));
+                                    }}
+                                >
+                                    <option value="">Pilih produsen</option>
+                                    {producers.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
+                                </select>
+                                <InputError message={form.errors.producer_id} />
+                            </label>
                             <label className="flex items-center gap-3 text-sm font-semibold"><input type="checkbox" className="size-5 accent-[var(--primary)]" checked={form.data.is_featured} onChange={(e) => form.setData('is_featured', e.target.checked)} /> Unggulan</label>
                         </div>
                     </Card>
