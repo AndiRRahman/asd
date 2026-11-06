@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Panel;
 
 use App\Domain\Order\OrderService;
+use App\Domain\Order\OrderStateMachine;
 use App\Domain\Order\OrderStatus;
 use App\Domain\Payment\RefundService;
+use App\Domain\Promotion\VoucherService;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderRefund;
@@ -89,14 +91,27 @@ class OrderController extends Controller
         return $this->done('Foto serah terima tersimpan.');
     }
 
+    public function verify(Request $request, string $code, OrderStateMachine $machine, VoucherService $vouchers): RedirectResponse
+    {
+        $order = Order::query()->where('code', $code)->firstOrFail();
+        abort_unless(in_array($order->status, [OrderStatus::MenungguVerifikasi, OrderStatus::MenungguPembayaran]), 409, 'Pesanan tidak dalam status menunggu verifikasi.');
+
+        $machine->transition($order, OrderStatus::Diproses, $request->user(), 'Pesanan diverifikasi & disetujui');
+        $vouchers->markUsed($order);
+
+        activity()->performedOn($order)->causedBy($request->user())->withProperties(['grand_total' => $order->grand_total])->log('Pesanan diverifikasi & disetujui');
+
+        return $this->done('Pesanan berhasil diverifikasi dan masuk antrean proses.');
+    }
+
     public function cancel(Request $request, string $code): RedirectResponse
     {
         $data = $request->validate(['reason' => ['required', 'string', 'max:255']]);
         $order = Order::query()->where('code', $code)->firstOrFail();
-        abort_unless($order->status === OrderStatus::Diproses, 409, 'Admin hanya bisa membatalkan pesanan berstatus Diproses.');
+        abort_unless(in_array($order->status, [OrderStatus::Diproses, OrderStatus::MenungguVerifikasi, OrderStatus::MenungguPembayaran]), 409, 'Pesanan tidak bisa dibatalkan.');
         $this->orders->cancelByAdmin($order, $request->user(), $data['reason']);
 
-        return $this->done('Pesanan dibatalkan dan stok dikembalikan. Catat pengembalian dana di bawah.');
+        return $this->done('Pesanan dibatalkan dan stok dikembalikan.');
     }
 
     public function requestRefund(Request $request, string $code, RefundService $refunds): RedirectResponse

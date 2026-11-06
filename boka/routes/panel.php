@@ -23,6 +23,7 @@ Route::middleware('can:pesanan.kelola')->group(function () {
 
     Route::get('pesanan', [OrderController::class, 'index'])->name('orders');
     Route::get('pesanan/{code}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('pesanan/{code}/verifikasi', [OrderController::class, 'verify'])->name('orders.verify');
     Route::get('pesanan/{code}/label', [OrderController::class, 'label'])->name('orders.label');
     Route::post('pesanan/{code}/batal', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::post('paket/{shipment}/resi', [OrderController::class, 'tracking'])->name('shipments.tracking');

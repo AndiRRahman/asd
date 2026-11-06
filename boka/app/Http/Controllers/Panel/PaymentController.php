@@ -29,12 +29,12 @@ class PaymentController extends Controller
         return Inertia::render('panel/payments/index', [
             'orders' => Order::query()->where('status', OrderStatus::MenungguVerifikasi)
                 ->with(['user:id,name', 'latestProof'])->get()
-                ->sortBy(fn ($o) => $o->latestProof?->created_at)->values()
+                ->sortBy(fn ($o) => $o->latestProof?->created_at ?? $o->created_at)->values()
                 ->map(fn (Order $o) => [
                     'code' => $o->code, 'buyer' => $o->user->name, 'grand_total' => $o->grand_total,
-                    'bank' => $o->bank_snapshot['bank_name'] ?? null, 'sender' => $o->latestProof?->sender_name,
-                    'waiting_since' => $o->latestProof?->created_at?->toIso8601String(),
-                    'stage' => $o->latestProof?->status,
+                    'bank' => $o->bank_snapshot['bank_name'] ?? null, 'sender' => $o->latestProof?->sender_name ?? $o->user->name,
+                    'waiting_since' => ($o->latestProof?->created_at ?? $o->created_at)?->toIso8601String(),
+                    'stage' => $o->latestProof?->status ?? 'menunggu_verifikasi',
                 ]),
         ]);
     }

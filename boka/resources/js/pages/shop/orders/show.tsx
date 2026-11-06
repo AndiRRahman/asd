@@ -1,5 +1,5 @@
 import { Link, router, useForm, usePage } from '@inertiajs/react';
-import { AlertTriangle, Check, Copy, FileText, MapPin, Package, ShieldAlert, Star, Store, Truck, Upload } from 'lucide-react';
+import { AlertTriangle, Check, CheckCircle2, Copy, FileText, MapPin, Package, ShieldAlert, Star, Store, Truck, Upload } from 'lucide-react';
 import { useState } from 'react';
 import InputError from '@/components/input-error';
 import { splitDuration, useCountdown } from '@/components/shop/bits';
@@ -161,9 +161,44 @@ export default function OrderShow({ order, pickupQr }: { order: OrderDetail; pic
             )}
 
             {order.status === 'menunggu_verifikasi' && (
-                <section className="rounded-2xl border bg-gold-soft p-5 text-sm">
-                    <p className="font-bold">{t('order.verifying_title')}</p>
-                    <p className="mt-1">{t('order.verifying_body')}</p>
+                <section className="space-y-4 rounded-2xl border-2 border-primary/30 bg-card p-5">
+                    <div className="rounded-xl border border-gold/40 bg-gold-soft p-4 text-sm">
+                        <p className="flex items-center gap-2 text-base font-bold text-foreground">
+                            <CheckCircle2 className="size-5 text-primary" /> Pesanan Berhasil Masuk · Menunggu Verifikasi
+                        </p>
+                        <p className="mt-1 text-muted-foreground">
+                            Pesanan Anda telah diterima oleh tim kami dan sedang dalam antrean verifikasi untuk segera diproses.
+                        </p>
+                    </div>
+
+                    {order.bank && (
+                        <div className="space-y-2">
+                            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Informasi Pembayaran</p>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                <CopyRow label={t('order.transfer_exact')} value={String(order.grand_total)} display={rupiah(order.grand_total)} />
+                                <CopyRow label={`${order.bank.bank_name} · a.n. ${order.bank.account_holder}`} value={order.bank.account_number.replace(/\D/g, '')} display={order.bank.account_number} />
+                            </div>
+                        </div>
+                    )}
+
+                    {order.can_upload_proof && (
+                        <details className="text-xs">
+                            <summary className="cursor-pointer py-1 font-semibold text-primary hover:underline">
+                                {order.proof ? 'Lihat / Unggah Ulang Bukti Transfer' : 'Sudah Transfer? Unggah Bukti Transfer di Sini (Opsional)'}
+                            </summary>
+                            <div className="mt-3">
+                                <ProofForm order={order} />
+                            </div>
+                        </details>
+                    )}
+
+                    {order.can_cancel && (
+                        <div className="border-t pt-2">
+                            <button type="button" className="text-sm text-muted-foreground underline hover:text-destructive" onClick={() => router.post(`/pesanan/${order.code}/batal`, {}, { preserveScroll: true })}>
+                                {t('order.cancel')}
+                            </button>
+                        </div>
+                    )}
                 </section>
             )}
 

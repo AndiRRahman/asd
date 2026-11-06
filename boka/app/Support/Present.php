@@ -216,8 +216,8 @@ final class Present
                 'note' => $h->note,
                 'at' => $h->created_at?->toIso8601String(),
             ])->all(),
-            'can_upload_proof' => $awaitingPayment && $order->payment_deadline_at?->isFuture(),
-            'can_cancel' => $awaitingPayment,
+            'can_upload_proof' => ($awaitingPayment || $order->status === OrderStatus::MenungguVerifikasi) && $order->payment_deadline_at?->isFuture(),
+            'can_cancel' => $awaitingPayment || $order->status === OrderStatus::MenungguVerifikasi,
             'can_complete' => $order->status === OrderStatus::Dikirim,
             'can_review' => $order->status === OrderStatus::Selesai,
         ];

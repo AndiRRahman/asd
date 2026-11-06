@@ -1,5 +1,5 @@
 import { router, useForm } from '@inertiajs/react';
-import { Printer, Store, Truck, MapPin } from 'lucide-react';
+import { CheckCircle2, MapPin, Printer, Store, Truck } from 'lucide-react';
 import { useState } from 'react';
 import InputError from '@/components/input-error';
 import { Card, ConfirmButton, OrderStatusPill, PanelPage, Pill, fieldClass } from '@/components/panel/ui';
@@ -83,9 +83,26 @@ export default function OrderShow({ order, buyer, refunds, canRefund }: Props) {
                         </Card>
                     ))}
 
-                    {order.status === 'diproses' && (
+                    {order.status === 'menunggu_verifikasi' && (
+                        <Card title="Verifikasi Pesanan" actions={<OrderStatusPill status={order.status} />}>
+                            <p className="mb-4 text-sm text-muted-foreground">
+                                Pesanan baru masuk dan menunggu verifikasi admin. Periksa item dan alamat kirim, lalu klik tombol di bawah untuk menyetujui dan memproses pesanan ini.
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                <Button onClick={() => router.post(`/panel/pesanan/${order.code}/verifikasi`)}>
+                                    <CheckCircle2 className="size-4" /> Verifikasi & Proses Pesanan
+                                </Button>
+                            </div>
+                        </Card>
+                    )}
+
+                    {(order.status === 'diproses' || order.status === 'menunggu_verifikasi' || order.status === 'menunggu_pembayaran') && (
                         <Card title="Batalkan pesanan">
-                            <p className="mb-3 text-sm text-muted-foreground">Fase 1: jika satu titik asal tidak bisa mengirim, batalkan seluruh pesanan lalu catat pengembalian dana di bawah.</p>
+                            <p className="mb-3 text-sm text-muted-foreground">
+                                {order.status === 'menunggu_verifikasi'
+                                    ? 'Jika pesanan tidak valid atau dibatalkan, Anda dapat membatalkan pesanan ini.'
+                                    : 'Fase 1: jika satu titik asal tidak bisa mengirim, batalkan seluruh pesanan lalu catat pengembalian dana di bawah.'}
+                            </p>
                             <div className="flex flex-wrap gap-2">
                                 <input className={`${fieldClass} max-w-md`} placeholder="Alasan pembatalan" value={cancelReason} onChange={(e) => setCancelReason(e.target.value)} />
                                 <ConfirmButton variant="destructive" disabled={!cancelReason} label="Batalkan" title="Batalkan pesanan ini?" body="Stok dan voucher dikembalikan. Aksi ini tidak bisa dibatalkan." onConfirm={() => router.post(`/panel/pesanan/${order.code}/batal`, { reason: cancelReason })} />

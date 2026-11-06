@@ -46,9 +46,9 @@ class PaymentService
         $this->orders->expireIfDue($order);
         $order->refresh();
 
-        if ($order->status !== OrderStatus::MenungguPembayaran) {
+        if ($order->status !== OrderStatus::MenungguPembayaran && $order->status !== OrderStatus::MenungguVerifikasi) {
             throw new BusinessRuleException(
-                $order->status === OrderStatus::Kedaluwarsa ? 'Batas waktu pembayaran sudah lewat.' : 'Pesanan ini tidak sedang menunggu pembayaran.',
+                $order->status === OrderStatus::Kedaluwarsa ? 'Batas waktu pembayaran sudah lewat.' : 'Pesanan ini tidak sedang menunggu pembayaran atau verifikasi.',
                 'payment_deadline_passed',
                 409,
             );
@@ -72,7 +72,9 @@ class PaymentService
                 'transferred_at' => $transferredAt,
             ]);
 
-            $this->machine->transition($order, OrderStatus::MenungguVerifikasi, $buyer, 'Bukti transfer diunggah', notify: true);
+            if ($order->status !== OrderStatus::MenungguVerifikasi) {
+                $this->machine->transition($order, OrderStatus::MenungguVerifikasi, $buyer, 'Bukti transfer diunggah', notify: true);
+            }
 
             Notification::send(
                 User::permission('pembayaran.verifikasi')->get(),
@@ -119,21 +121,23 @@ class PaymentService
         $needsSecond = $order->grand_total > (int) Setting::get('second_approval_threshold');
 
         return DB::transaction(function () use ($order, $admin, $proof, $needsSecond, $mutationDatetime) {
-            if ($needsSecond && $proof->status !== 'disetujui_1') {
-                $proof->update(['status' => 'disetujui_1', 'reviewed_by' => $admin->id, 'reviewed_at' => now(), 'mutation_datetime' => Carbon::parse($mutationDatetime, 'Asia/Makassar')]);
-                activity()->performedOn($order)->causedBy($admin)->log('Persetujuan pertama pembayaran');
+            if ($proof) {
+                if ($needsSecond && $proof->status !== 'disetujui_1') {
+                    $proof->update(['status' => 'disetujui_1', 'reviewed_by' => $admin->id, 'reviewed_at' => now(), 'mutation_datetime' => Carbon::parse($mutationDatetime, 'Asia/Makassar')]);
+                    activity()->performedOn($order)->causedBy($admin)->log('Persetujuan pertama pembayaran');
 
-                return 'menunggu_persetujuan_kedua';
-            }
-
-            if ($needsSecond) {
-                if ($proof->reviewed_by === $admin->id) {
-                    throw new BusinessRuleException('Persetujuan kedua harus dilakukan oleh Admin Transaksi lain atau Super Admin.', 'same_approver', 403);
+                    return 'menunggu_persetujuan_kedua';
                 }
 
-                $proof->update(['status' => 'disetujui', 'second_reviewed_by' => $admin->id]);
-            } else {
-                $proof->update(['status' => 'disetujui', 'reviewed_by' => $admin->id, 'reviewed_at' => now(), 'mutation_datetime' => Carbon::parse($mutationDatetime, 'Asia/Makassar')]);
+                if ($needsSecond) {
+                    if ($proof->reviewed_by === $admin->id) {
+                        throw new BusinessRuleException('Persetujuan kedua harus dilakukan oleh Admin Transaksi lain atau Super Admin.', 'same_approver', 403);
+                    }
+
+                    $proof->update(['status' => 'disetujui', 'second_reviewed_by' => $admin->id]);
+                } else {
+                    $proof->update(['status' => 'disetujui', 'reviewed_by' => $admin->id, 'reviewed_at' => now(), 'mutation_datetime' => Carbon::parse($mutationDatetime, 'Asia/Makassar')]);
+                }
             }
 
             $this->machine->transition($order, OrderStatus::Diproses, $admin, 'Pembayaran disetujui');

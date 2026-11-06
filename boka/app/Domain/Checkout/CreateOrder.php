@@ -76,7 +76,7 @@ class CreateOrder
         $order = Order::query()->create([
             'code' => $this->generateCode(),
             'user_id' => $user->id,
-            'status' => OrderStatus::MenungguPembayaran,
+            'status' => OrderStatus::MenungguVerifikasi,
             'subtotal' => $quote['subtotal'],
             'voucher_discount' => $quote['voucher_discount'],
             'shipping_cost' => $quote['shipping_cost'],
@@ -158,7 +158,7 @@ class CreateOrder
             }
         }
 
-        $order->histories()->create(['to_status' => OrderStatus::MenungguPembayaran->value, 'actor_id' => $user->id, 'note' => 'Pesanan dibuat']);
+        $order->histories()->create(['to_status' => OrderStatus::MenungguVerifikasi->value, 'actor_id' => $user->id, 'note' => 'Pesanan dibuat, menunggu verifikasi']);
         $this->cart->clear($user);
 
         return $order;
@@ -174,7 +174,7 @@ class CreateOrder
             );
         }
 
-        $pending = Order::query()->where('user_id', $user->id)->where('status', OrderStatus::MenungguPembayaran)->count();
+        $pending = Order::query()->where('user_id', $user->id)->whereIn('status', [OrderStatus::MenungguPembayaran, OrderStatus::MenungguVerifikasi])->count();
 
         if ($pending >= (int) Setting::get('max_pending_orders')) {
             throw new BusinessRuleException('Selesaikan pembayaran pesanan Anda yang lain dulu. Maksimal '.Setting::get('max_pending_orders').' pesanan menunggu pembayaran.', 'too_many_pending', 429);
