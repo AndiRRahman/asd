@@ -101,7 +101,19 @@ export default function ProductForm({ categories, producers, origins, stockReaso
 
     function save(similarityDecision: Record<string, unknown> | null) {
         form.transform((data) => ({ ...data, similarity_decision: similarityDecision }) as typeof data);
-        const options = { forceFormData: true, preserveScroll: true, onSuccess: () => setCandidates(null) };
+        const options = {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                setCandidates(null);
+                form.setData((prev) => ({
+                    ...prev,
+                    images: [],
+                    remove_image_ids: [],
+                    cover_image_id: null,
+                }));
+            },
+        };
         if (product) {
             form.post(`/panel/produk/${product.id}`, options);
         } else {
@@ -236,7 +248,21 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                         <div className="grid grid-cols-3 gap-2">
                             {product?.images.filter((img) => !form.data.remove_image_ids.includes(img.id)).map((img) => (
                                 <div key={img.id} className={cn('relative overflow-hidden rounded-lg border-2', (form.data.cover_image_id ?? (img.is_cover ? img.id : null)) === img.id ? 'border-primary' : 'border-transparent')}>
-                                    <img src={img.url} alt="" className="aspect-square w-full object-cover" />
+                                    <img
+                                        src={img.url}
+                                        alt=""
+                                        className="aspect-square w-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                            const parent = e.currentTarget.parentElement;
+                                            if (parent && !parent.querySelector('.img-fallback')) {
+                                                const fallback = document.createElement('div');
+                                                fallback.className = 'img-fallback aspect-square w-full flex items-center justify-center bg-muted text-destructive text-xs p-2 text-center';
+                                                fallback.innerText = 'Foto tidak ditemukan / rusak';
+                                                parent.prepend(fallback);
+                                            }
+                                        }}
+                                    />
                                     <div className="absolute inset-x-0 bottom-0 flex justify-between bg-background/90 p-1 text-[11px]">
                                         <button type="button" className="font-semibold text-primary" onClick={() => form.setData('cover_image_id', img.id)}>Sampul</button>
                                         <button type="button" className="text-destructive font-semibold" onClick={() => form.setData('remove_image_ids', [...form.data.remove_image_ids, img.id])}>Hapus</button>

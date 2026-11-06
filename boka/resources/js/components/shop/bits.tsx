@@ -28,7 +28,9 @@ export function ProductImage({
     priority?: boolean;
     className?: string;
 }) {
-    if (!image) {
+    const [failed, setFailed] = useState(false);
+
+    if (!image || failed) {
         return (
             <div className={cn('flex aspect-square items-center justify-center bg-muted text-muted-foreground', className)}>
                 <Package className="size-10" aria-hidden="true" />
@@ -47,6 +49,7 @@ export function ProductImage({
             decoding="async"
             style={{ backgroundColor: image.color ?? undefined }}
             className={cn('aspect-square w-full object-cover', className)}
+            onError={() => setFailed(true)}
         />
     );
 }
