@@ -291,14 +291,14 @@ class ProductController extends Controller
         foreach ($variants as $input) {
             $options = collect($input['options'] ?? [])->filter(fn ($v, $k) => filled($k) && filled($v))->all();
             $attributes = [
-                'barcode' => $input['barcode'] ?? null,
+                'barcode' => filled($input['barcode'] ?? null) ? $input['barcode'] : null,
                 'options' => $options,
                 'options_key' => ProductPublisher::optionsKey($options),
                 'price' => (int) $input['price'],
-                'compare_price' => $input['compare_price'] ?? null,
+                'compare_price' => filled($input['compare_price'] ?? null) ? (int) $input['compare_price'] : null,
                 'weight_gram' => (int) $input['weight_gram'],
-                'low_stock_threshold' => $input['low_stock_threshold'] ?? config('boka.low_stock_default'),
-                'max_per_order' => $input['max_per_order'] ?? null,
+                'low_stock_threshold' => filled($input['low_stock_threshold'] ?? null) ? (int) $input['low_stock_threshold'] : config('boka.low_stock_default'),
+                'max_per_order' => filled($input['max_per_order'] ?? null) ? (int) $input['max_per_order'] : null,
             ];
 
             $variant = isset($input['id']) ? $product->variants()->find($input['id']) : null;
