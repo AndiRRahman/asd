@@ -1,5 +1,5 @@
 import { router, useForm } from '@inertiajs/react';
-import { AlertTriangle, CheckCircle2, ImagePlus, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ImagePlus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import InputError from '@/components/input-error';
 import { Card, PanelPage, Pill, fieldClass } from '@/components/panel/ui';
@@ -86,7 +86,7 @@ export default function ProductForm({ categories, producers, origins, stockReaso
         origin_id: product?.origin_id ?? '',
         is_featured: product?.is_featured ?? false,
         tags: product?.tags ?? '',
-        variants: (product?.variants ?? [emptyVariant()]) as VariantInput[],
+        variants: (product?.variants?.map((v) => ({ ...v, options: {} })) ?? [emptyVariant()]) as VariantInput[],
         images: [] as File[],
         cover_image_id: null as string | null,
         remove_image_ids: [] as string[],
@@ -193,26 +193,56 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                         </div>
                     </Card>
 
-                    <Card title="Varian, harga, dan stok" actions={<Button type="button" variant="outline" size="sm" onClick={() => form.setData('variants', [...form.data.variants, emptyVariant()])}><Plus /> Varian</Button>}>
+                    <Card title="Harga dan stok">
                         <div className="space-y-4">
                             {form.data.variants.map((v, i) => (
                                 <div key={v.id ?? `new-${i}`} className="rounded-xl border p-4">
                                     <div className="grid gap-3 sm:grid-cols-2">
-                                        <label className="grid gap-1 text-xs font-semibold">Nama opsi (mis. Ukuran / Berat)<input className={fieldClass} value={Object.keys(v.options)[0] ?? ''} onChange={(e) => setVariant(i, { options: e.target.value ? { [e.target.value]: Object.values(v.options)[0] ?? '' } : {} })} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Nilai opsi (mis. 250 g)<input className={fieldClass} value={Object.values(v.options)[0] ?? ''} onChange={(e) => setVariant(i, { options: { [Object.keys(v.options)[0] || 'Varian']: e.target.value } })} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Harga jual (Rp)<input className={fieldClass} type="number" value={v.price} onChange={(e) => setVariant(i, { price: e.target.value === '' ? '' : Number(e.target.value) })} /><InputError message={errors[`variants.${i}.price`]} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Berat (gram)<input className={fieldClass} type="number" value={v.weight_gram} onChange={(e) => setVariant(i, { weight_gram: e.target.value === '' ? '' : Number(e.target.value) })} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Ambang stok menipis<input className={fieldClass} type="number" value={v.low_stock_threshold} onChange={(e) => setVariant(i, { low_stock_threshold: e.target.value === '' ? '' : Number(e.target.value) })} /></label>
-                                        <label className="grid gap-1 text-xs font-semibold">Batas beli per pesanan<input className={fieldClass} type="number" value={v.max_per_order ?? ''} onChange={(e) => setVariant(i, { max_per_order: e.target.value === '' ? '' : Number(e.target.value) })} placeholder="tanpa batas" /></label>
+                                        <label className="grid gap-1 text-xs font-semibold">
+                                            Harga jual (Rp)
+                                            <input className={fieldClass} type="number" value={v.price} onChange={(e) => setVariant(i, { price: e.target.value === '' ? '' : Number(e.target.value) })} />
+                                            <InputError message={errors[`variants.${i}.price`]} />
+                                        </label>
+                                        <label className="grid gap-1 text-xs font-semibold">
+                                            Berat (gram)
+                                            <input className={fieldClass} type="number" value={v.weight_gram} onChange={(e) => setVariant(i, { weight_gram: e.target.value === '' ? '' : Number(e.target.value) })} />
+                                            <InputError message={errors[`variants.${i}.weight_gram`]} />
+                                        </label>
                                     </div>
                                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                                         {v.id ? (
-                                            <span className="flex items-center gap-2 text-sm">Stok <b className="price text-lg">{v.stock}</b> <Button type="button" size="sm" variant="outline" onClick={() => setStockVariant(v as VariantInput & { id: string })}>Mutasi stok</Button></span>
+                                            <span className="flex items-center gap-2 text-sm">
+                                                Stok <b className="price text-lg">{v.stock}</b>
+                                                <Button type="button" size="sm" variant="outline" onClick={() => setStockVariant(v as VariantInput & { id: string })}>
+                                                    Mutasi stok
+                                                </Button>
+                                            </span>
                                         ) : (
-                                            <label className="flex items-center gap-2 text-xs font-semibold">Stok awal <input className={`${fieldClass} w-28`} type="number" value={v.stock} onChange={(e) => setVariant(i, { stock: e.target.value === '' ? '' : Number(e.target.value) })} /></label>
+                                            <label className="flex items-center gap-2 text-xs font-semibold">
+                                                Stok awal
+                                                <input className={`${fieldClass} w-28`} type="number" value={v.stock} onChange={(e) => setVariant(i, { stock: e.target.value === '' ? '' : Number(e.target.value) })} />
+                                                <InputError message={errors[`variants.${i}.stock`]} />
+                                            </label>
                                         )}
-                                        {form.data.variants.length > 1 && <Button type="button" variant="ghost" size="sm" onClick={() => form.setData('variants', form.data.variants.filter((_, idx) => idx !== i))}><Trash2 /> Hapus varian</Button>}
+                                        {form.data.variants.length > 1 && (
+                                            <Button type="button" variant="ghost" size="sm" onClick={() => form.setData('variants', form.data.variants.filter((_, idx) => idx !== i))}>
+                                                <Trash2 /> Hapus
+                                            </Button>
+                                        )}
                                     </div>
+                                    <details className="mt-3 text-xs text-muted-foreground">
+                                        <summary className="cursor-pointer font-medium hover:underline">Opsi lanjutan (ambang stok & batas pesanan)</summary>
+                                        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                                            <label className="grid gap-1 text-xs font-semibold">
+                                                Ambang stok menipis
+                                                <input className={fieldClass} type="number" value={v.low_stock_threshold} onChange={(e) => setVariant(i, { low_stock_threshold: e.target.value === '' ? '' : Number(e.target.value) })} />
+                                            </label>
+                                            <label className="grid gap-1 text-xs font-semibold">
+                                                Batas beli per pesanan
+                                                <input className={fieldClass} type="number" value={v.max_per_order ?? ''} onChange={(e) => setVariant(i, { max_per_order: e.target.value === '' ? '' : Number(e.target.value) })} placeholder="tanpa batas" />
+                                            </label>
+                                        </div>
+                                    </details>
                                     {v.movements && v.movements.length > 0 && (
                                         <details className="mt-3 text-xs">
                                             <summary className="cursor-pointer font-semibold">Riwayat mutasi</summary>
