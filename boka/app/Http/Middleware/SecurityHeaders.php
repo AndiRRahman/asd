@@ -28,7 +28,9 @@ class SecurityHeaders
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
         $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
         $response->headers->remove('X-Powered-By');
-        header_remove('X-Powered-By');
+        if (! headers_sent()) {
+            @header_remove('X-Powered-By');
+        }
 
         if (app()->isProduction()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
