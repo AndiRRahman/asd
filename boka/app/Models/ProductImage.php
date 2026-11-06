@@ -19,7 +19,12 @@ class ProductImage extends Model
 
     public function url(): string
     {
-        return Str::startsWith($this->path, ['http', '/']) ? $this->path : asset('storage/'.$this->path);
+        if (Str::startsWith($this->path, ['http://', 'https://'])) {
+            return $this->path;
+        }
+
+        // Gunakan relative path /storage/... agar selalu cocok dengan port/host mana pun yang dibuka (8010, IP VPS, dsb.)
+        return '/storage/' . ltrim($this->path, '/');
     }
 
     public function toFront(): array
