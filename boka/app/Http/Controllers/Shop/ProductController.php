@@ -48,10 +48,9 @@ class ProductController extends Controller
             'reviews' => $reviews->map(fn ($r) => Present::review($r)),
             'ratingDistribution' => $distribution,
             'related' => Present::productCards($reco->relatedToProduct($product)),
-            'forYou' => Inertia::defer(fn () => Present::productCards($reco->relatedToSearches($user?->id, $request->session()->getId(), 4))),
             'wishlisted' => $user ? Wishlist::query()->where('user_id', $user->id)->where('product_id', $product->id)->exists() : false,
             // Titik 1 (4.4): pemilih jumlah = stok tersedia dikurangi jumlah yang sudah di keranjang.
-            'inCart' => collect($cart->rawItems($user, CartController::guestCart($request)))->mapWithKeys(fn ($row) => [HashId::encode($row['variant_id']) => $row['qty']]),
+            'inCart' => (object) collect($cart->rawItems($user, CartController::guestCart($request)))->mapWithKeys(fn ($row) => [HashId::encode($row['variant_id']) => $row['qty']])->all(),
             'shareUrl' => url('/produk/'.$product->slug),
         ]);
     }

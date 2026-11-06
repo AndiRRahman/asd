@@ -282,27 +282,7 @@ export default function Product({ product, reviews, ratingDistribution = {}, rel
                         <ProductGrid products={related} />
                     </section>
                 )}
-
-                <Deferred data="forYou" fallback={<div className="mt-12"><ProductGridSkeleton count={5} /></div>}>
-                    <ForYou />
-                </Deferred>
             </div>
         </>
-    );
-}
-
-function ForYou() {
-    const t = useT();
-    const { forYou } = usePage<{ forYou?: ProductCard[] }>().props;
-
-    if (!forYou || forYou.length === 0) {
-        return null;
-    }
-
-    return (
-        <section className="mt-12">
-            <h2 className="mb-4 text-xl font-extrabold">{t('home.related')}</h2>
-            <ProductGrid products={forYou} />
-        </section>
     );
 }
