@@ -22,12 +22,6 @@ class ProductPublisher
             $missing[] = 'Tambahkan minimal 1 foto.';
         }
 
-        foreach (['producer_id' => 'produsen'] as $field => $label) {
-            if (! $product->{$field}) {
-                $missing[] = "Pilih {$label}.";
-            }
-        }
-
         if (! $product->variants->contains(fn (ProductVariant $v) => $v->price > 0 && $v->weight_gram > 0)) {
             $missing[] = 'Isi minimal satu varian dengan harga dan berat lebih dari 0.';
         }

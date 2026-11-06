@@ -190,6 +190,7 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                             <label className="grid gap-1.5 text-sm font-semibold">Deskripsi Produk<textarea rows={5} className="rounded-lg border border-input bg-card p-3 font-normal" value={form.data.description.id ?? ''} onChange={(e) => form.setData('description', { id: e.target.value, en: '' })} /></label>
                             <label className="grid gap-1.5 text-sm font-semibold">Cara Seduh / Petunjuk Penyajian (opsional)<textarea rows={3} className="rounded-lg border border-input bg-card p-3 font-normal" placeholder="Contoh: Seduh dengan air 90°C selama 3 menit..." value={form.data.brewing_instructions.id ?? ''} onChange={(e) => form.setData('brewing_instructions', { id: e.target.value, en: '' })} /></label>
                             <label className="grid gap-1.5 text-sm font-semibold">Tag (pisahkan dengan koma, dipakai rekomendasi)<input className={fieldClass} value={form.data.tags} onChange={(e) => form.setData('tags', e.target.value)} placeholder="kopi, oleh-oleh" /></label>
+                            <label className="flex items-center gap-3 text-sm font-semibold"><input type="checkbox" className="size-5 accent-[var(--primary)]" checked={form.data.is_featured} onChange={(e) => form.setData('is_featured', e.target.checked)} /> Produk Unggulan (tampilkan di beranda)</label>
                         </div>
                     </Card>
 
@@ -259,27 +260,6 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                 </div>
 
                 <div className="space-y-6">
-                    <Card title="Produsen">
-                        <div className="grid gap-4">
-                            <label className="grid gap-1.5 text-sm font-semibold">
-                                Produsen
-                                <select
-                                    className={fieldClass}
-                                    value={form.data.producer_id}
-                                    onChange={(e) => {
-                                        const producer = producers.find((p) => p.value === Number(e.target.value));
-                                        form.setData((d) => ({ ...d, producer_id: Number(e.target.value), origin_id: producer?.origin_id || d.origin_id || '' }));
-                                    }}
-                                >
-                                    <option value="">Pilih produsen</option>
-                                    {producers.map((p) => <option key={p.value} value={p.value}>{p.label}</option>)}
-                                </select>
-                                <InputError message={form.errors.producer_id} />
-                            </label>
-                            <label className="flex items-center gap-3 text-sm font-semibold"><input type="checkbox" className="size-5 accent-[var(--primary)]" checked={form.data.is_featured} onChange={(e) => form.setData('is_featured', e.target.checked)} /> Unggulan</label>
-                        </div>
-                    </Card>
-
                     <Card title="Foto Produk">
                         <p className="mb-3 text-xs text-muted-foreground">Format JPG, PNG, atau WebP (maksimal 5 MB per foto). Foto otomatis dioptimasi ke WebP.</p>
                         

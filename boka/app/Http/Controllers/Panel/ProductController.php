@@ -248,8 +248,8 @@ class ProductController extends Controller
     {
         $target = Product::query()->findOrFail($decision['product_id']);
 
-        if ($target->producer_id !== (int) $data['producer_id'] || $target->origin_id !== (int) $data['origin_id']) {
-            throw new BusinessRuleException('Tambah stok atau varian baru hanya untuk produsen dan titik asal yang sama. Pilih "Simpan sebagai produk terpisah".');
+        if (! empty($data['producer_id']) && $target->producer_id && $target->producer_id !== (int) $data['producer_id']) {
+            throw new BusinessRuleException('Tambah stok atau varian baru hanya untuk produsen yang sama. Pilih "Simpan sebagai produk terpisah".');
         }
 
         $variantInput = $data['variants'][0];
@@ -357,10 +357,15 @@ class ProductController extends Controller
 
     private function productAttributes(array $data): array
     {
+        $producerId = ! empty($data['producer_id']) ? $data['producer_id'] : Producer::query()->value('id');
+
         $originId = $data['origin_id'] ?? null;
-        if (! $originId && ! empty($data['producer_id'])) {
-            $producer = Producer::find($data['producer_id']);
+        if (! $originId && ! empty($producerId)) {
+            $producer = Producer::find($producerId);
             $originId = $producer?->default_origin_id ?? Origin::query()->value('id');
+        }
+        if (! $originId) {
+            $originId = Origin::query()->value('id');
         }
 
         return [
@@ -369,7 +374,7 @@ class ProductController extends Controller
             'description' => array_filter($data['description'] ?? []),
             'brewing_instructions' => array_filter($data['brewing_instructions'] ?? []),
             'category_id' => $data['category_id'] ?? null,
-            'producer_id' => $data['producer_id'],
+            'producer_id' => $producerId,
             'origin_id' => $originId,
             'is_featured' => (bool) ($data['is_featured'] ?? false),
         ];
@@ -381,7 +386,7 @@ class ProductController extends Controller
             'name.id' => ['required', 'string', 'max:200'], 'name.en' => ['nullable', 'string', 'max:200'],
             'description.id' => ['nullable', 'string', 'max:5000'], 'description.en' => ['nullable', 'string', 'max:5000'],
             'brewing_instructions.id' => ['nullable', 'string', 'max:5000'], 'brewing_instructions.en' => ['nullable', 'string', 'max:5000'],
-            'category_id' => ['nullable', 'exists:categories,id'], 'producer_id' => ['required', 'exists:producers,id'],
+            'category_id' => ['nullable', 'exists:categories,id'], 'producer_id' => ['nullable', 'exists:producers,id'],
             'origin_id' => ['nullable', 'exists:origins,id'], 'is_featured' => ['boolean'], 'tags' => ['nullable', 'string', 'max:300'],
             'variants' => ['required', 'array', 'min:1'],
             'variants.*.id' => ['nullable', 'string'],
