@@ -229,22 +229,53 @@ export default function ProductForm({ categories, producers, origins, stockReaso
                         </div>
                     </Card>
 
-                    <Card title="Foto">
-                        <p className="mb-3 text-xs text-muted-foreground">JPG, PNG, atau WebP, maksimal 5 MB. Foto akan otomatis dikonversi ke format WebP teroptimasi.</p>
+                    <Card title="Foto Produk">
+                        <p className="mb-3 text-xs text-muted-foreground">Format JPG, PNG, atau WebP (maksimal 5 MB per foto). Foto otomatis dioptimasi ke WebP.</p>
+                        
+                        {/* Foto yang sudah tersimpan */}
                         <div className="grid grid-cols-3 gap-2">
                             {product?.images.filter((img) => !form.data.remove_image_ids.includes(img.id)).map((img) => (
                                 <div key={img.id} className={cn('relative overflow-hidden rounded-lg border-2', (form.data.cover_image_id ?? (img.is_cover ? img.id : null)) === img.id ? 'border-primary' : 'border-transparent')}>
                                     <img src={img.url} alt="" className="aspect-square w-full object-cover" />
                                     <div className="absolute inset-x-0 bottom-0 flex justify-between bg-background/90 p-1 text-[11px]">
-                                        <button type="button" onClick={() => form.setData('cover_image_id', img.id)}>Sampul</button>
-                                        <button type="button" className="text-destructive" onClick={() => form.setData('remove_image_ids', [...form.data.remove_image_ids, img.id])}>Hapus</button>
+                                        <button type="button" className="font-semibold text-primary" onClick={() => form.setData('cover_image_id', img.id)}>Sampul</button>
+                                        <button type="button" className="text-destructive font-semibold" onClick={() => form.setData('remove_image_ids', [...form.data.remove_image_ids, img.id])}>Hapus</button>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Pratinjau foto baru yang baru dipilih tapi belum disimpan */}
+                            {form.data.images.map((file, idx) => (
+                                <div key={idx} className="relative overflow-hidden rounded-lg border-2 border-dashed border-primary/50 bg-muted">
+                                    <img src={URL.createObjectURL(file)} alt="" className="aspect-square w-full object-cover opacity-80" />
+                                    <div className="absolute inset-x-0 bottom-0 flex justify-between bg-background/90 p-1 text-[11px]">
+                                        <span className="text-[10px] text-muted-foreground truncate px-1">Baru</span>
+                                        <button
+                                            type="button"
+                                            className="text-destructive font-semibold"
+                                            onClick={() => form.setData('images', form.data.images.filter((_, i) => i !== idx))}
+                                        >
+                                            Batal
+                                        </button>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <label className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed p-4 text-sm font-semibold">
-                            <ImagePlus className="size-4" /> {form.data.images.length ? `${form.data.images.length} foto dipilih` : 'Tambah foto'}
-                            <input type="file" multiple accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => form.setData('images', Array.from(e.target.files ?? []))} />
+
+                        <label className="mt-3 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-input p-4 text-sm font-semibold hover:border-primary transition-colors">
+                            <ImagePlus className="size-4 text-primary" /> {form.data.images.length ? `+ Tambah foto lain (${form.data.images.length} dipilih)` : 'Pilih Foto dari Perangkat'}
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/jpeg,image/png,image/webp"
+                                className="sr-only"
+                                onChange={(e) => {
+                                    const selected = Array.from(e.target.files ?? []);
+                                    if (selected.length) {
+                                        form.setData('images', [...form.data.images, ...selected]);
+                                    }
+                                }}
+                            />
                         </label>
                         <InputError message={Object.entries(errors).find(([k]) => k.startsWith('images'))?.[1]} />
                     </Card>
