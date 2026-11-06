@@ -73,19 +73,21 @@ function flyToCart(from: HTMLElement | null) {
     ghost.animate([{ transform: 'translate(0,0) scale(1)', opacity: 0.9 }, { transform: `translate(${dx}px, ${dy}px) scale(0.08)`, opacity: 0.2 }], { duration: 300, easing: 'cubic-bezier(.5,0,.75,0)' }).onfinish = () => ghost.remove();
 }
 
-export default function Product({ product, reviews, ratingDistribution, related, wishlisted, inCart, shareUrl }: Props) {
+export default function Product({ product, reviews, ratingDistribution = {}, related = [], wishlisted = false, inCart = {}, shareUrl }: Props) {
     const t = useT();
     const localePath = useLocalePath();
     const { auth, locale, store } = usePage<{ store?: { whatsapp?: string } }>().props;
-    const [variantId, setVariantId] = useState(product.variants.find((v) => v.max_buyable > 0)?.id ?? product.variants[0]?.id);
-    const variant = product.variants.find((v) => v.id === variantId) ?? product.variants[0];
-    const already = inCart[String(variant?.id)] ?? 0;
+    const variants = product?.variants ?? [];
+    const [variantId, setVariantId] = useState(variants.find((v) => v.max_buyable > 0)?.id ?? variants[0]?.id);
+    const variant = variants.find((v) => v.id === variantId) ?? variants[0];
+    const safeInCart = (inCart && typeof inCart === 'object' && !Array.isArray(inCart)) ? inCart : {};
+    const already = safeInCart[String(variant?.id)] ?? 0;
     const maxAddable = Math.max(0, (variant?.max_buyable ?? 0) - already);
     const [qty, setQty] = useState(1);
     const [busy, setBusy] = useState(false);
     const [heartPop, setHeartPop] = useState(false);
     const imageRef = useRef<HTMLDivElement>(null);
-    const totalReviews = Object.values(ratingDistribution).reduce((a, b) => a + b, 0);
+    const totalReviews = ratingDistribution ? Object.values(ratingDistribution).reduce((a, b) => a + b, 0) : 0;
 
     function addToCart() {
         if (!variant || maxAddable < 1) {
