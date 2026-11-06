@@ -322,11 +322,23 @@ class ProductController extends Controller
 
     private function syncImagesAndTags(Request $request, Product $product, array $data): void
     {
-        foreach ($request->file('images', []) as $i => $file) {
+        $files = $request->file('images', []);
+        if ($files instanceof \Illuminate\Http\UploadedFile) {
+            $files = [$files];
+        }
+
+        foreach ($files as $i => $file) {
+            if (! ($file instanceof \Illuminate\Http\UploadedFile) || ! $file->isValid()) {
+                continue;
+            }
             $converted = ImageConverter::convertAndStore($file, 'produk');
+            $hasCover = $product->images()->where('is_cover', true)->exists();
             $product->images()->create([
-                'path' => $converted['path'], 'width' => $converted['width'], 'height' => $converted['height'],
-                'is_cover' => ! $product->images()->exists() && $i === 0, 'sort_order' => $product->images()->count(),
+                'path' => $converted['path'],
+                'width' => $converted['width'],
+                'height' => $converted['height'],
+                'is_cover' => ! $hasCover && $i === 0,
+                'sort_order' => $product->images()->count(),
             ]);
         }
 
