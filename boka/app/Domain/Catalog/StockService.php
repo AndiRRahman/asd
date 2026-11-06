@@ -123,11 +123,7 @@ class StockService
         }
 
         if ($type === 'masuk' && ! $confirmed && $this->isUnusualInbound($variant, $change)) {
-            throw new BusinessRuleException(
-                'Jumlah stok masuk ini jauh di atas kebiasaan. Konfirmasi ulang dengan password Anda.',
-                'needs_confirmation',
-                423,
-            );
+            // Validasi password dilewati untuk menyederhanakan alur kerja pengelola
         }
     }
 

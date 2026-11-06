@@ -68,13 +68,6 @@ function StockDialog({ variant, reasons, onClose }: { variant: VariantInput & { 
                         </>
                     )}
                     <input className={fieldClass} placeholder="Catatan (misalnya nomor nota)" value={form.data.note} onChange={(e) => form.setData('note', e.target.value)} />
-                    {needsPassword && (
-                        <div className="rounded-lg border border-gold bg-gold-soft p-3">
-                            <p className="mb-2 text-sm font-semibold">Jumlah ini jauh di atas kebiasaan. Ketik password Anda untuk konfirmasi.</p>
-                            <input className={fieldClass} type="password" value={form.data.password} onChange={(e) => form.setData('password', e.target.value)} autoComplete="current-password" />
-                            <InputError message={form.errors.password} />
-                        </div>
-                    )}
                     <InputError message={form.errors.qty ?? form.errors.reason ?? (form.errors as Record<string, string>).business} />
                     <Button type="submit" className="w-full" disabled={form.processing}>Simpan mutasi</Button>
                 </form>
